@@ -1,0 +1,35 @@
+.container {
+    text-align: center;
+    padding: 2rem;
+}
+
+.title {
+    font-size: 3rem ;
+    color : #d4a017;
+    margin-bottom: 1rem;
+}
+.question {
+    font-size: 1.5rem;
+    color: #d4a017;
+    margin-bottom :2rem;
+}
+.actions > * {
+    margin: 0 0.5rem;
+}
+.primaryBtn {
+    background: linear-gradient(90deg, #976713, #cf8d07);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 1.5rem;
+    cursor: pointer;
+}
+
+.secondaryBtn {
+    background: rgba(202, 202, 202, 0.226);
+    color: #a7a6a4;
+    border: 1px solid #d4a017;
+    padding: 0.5rem 1rem;
+    border-radius: 1.5rem;
+    cursor: pointer;
+}

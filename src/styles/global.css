@@ -1,0 +1,23 @@
+@font-face {
+  font-family: '';
+  /* src: url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Playwrite+CL:wght@100..400&display=swap'); */
+  /* src: url('https://fonts.googleapis.com/css2?family=Lugrasimo&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Playwrite+CL:wght@100..400&display=swap'); */
+  src: url('https://fonts.googleapis.com/css2?family=Merienda:wght@300..900&display=swap');
+  /* src:url('https://fonts.googleapis.com/css2?family=Lugrasimo&family=Playwrite+CL:wght@100..400&display=swap'); */
+  font-weight:normal;
+  font-style: normal;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  /* font-family: "Playwrite CL", cursive; */
+  font-family: "Merienda", cursive;
+  background-color: #252525;
+  color: #333;
+}
+
+
