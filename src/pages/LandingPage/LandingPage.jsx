@@ -1,5 +1,5 @@
 import React from 'react'
-import Question from '../../components/Question/Questions'
+import Question from '../../components/Question/Question'
 import Navbar from '../../components/Navbar/Navbar';
 import styles from './LandingPage.module.css';
 

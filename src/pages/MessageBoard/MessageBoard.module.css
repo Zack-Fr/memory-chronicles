@@ -1,0 +1,133 @@
+
+.container {
+min-height: 100vh;
+padding: 2rem;
+display: flex;
+align-items: center;
+justify-content: center;
+background-image: url('src/assets/images/desert_landscape.svg');
+background-size: cover;
+}
+.inner {
+
+/* width: 100%; */
+max-width: 1200px;
+display: flex;
+align-items: baseline;
+gap: 10rem;
+
+}
+
+.leftPane {
+flex: 2;
+display: flex;
+flex-direction: column;
+
+}
+
+.rightPane {
+flex: 1;
+display: flex;
+flex-direction: column;
+justify-content: center;
+}
+
+.pillInput {
+flex: 1;
+max-width:300px;
+margin-right: 1rem;
+}
+
+.textAreaWrapper {
+position: relative;
+
+}
+
+.clipIcon {
+position: absolute;
+top: 0.8rem;
+left: -1.2rem;
+width: 1.5rem;
+opacity: 0.7;
+}
+
+.topRow {
+position: relative;
+display: flex;
+align-items: center;
+gap: 1rem;
+margin-bottom: 1.5rem;
+}
+
+.attachRow {
+display: flex;
+gap: 1rem;
+}
+
+.selectorGroup {
+margin-bottom: 1.5rem;
+}
+
+.selectorLabel {
+font-size: 1rem;
+color: #333;
+margin-bottom: 0.5rem;
+}
+
+
+.dateLabel {
+position: absolute;
+top: -1.2rem;
+left: 0;
+font-size: 0.9rem;
+color: #333;
+}
+
+.sendButton {
+margin-top: auto;
+align-self: flex-end;
+display: flex;
+justify-content: center;
+}
+
+.error {
+    color: #d4380d;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.actions {
+display: flex;
+justify-content: flex-end;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+.inner {
+    flex-direction: column;
+}
+.topRow {
+    flex-direction: column;
+    align-items: flex-start;
+}
+.pillInput {
+    width: 100%;
+}
+}
+
+@media (max-width: 600px) {
+.container {
+    padding: 1.5rem;
+}
+.inner {
+    gap: 1rem;
+}
+.attachRow,
+.selectorGroup {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+}
+
+
+

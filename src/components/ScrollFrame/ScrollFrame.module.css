@@ -1,0 +1,40 @@
+.ScrollFrame {
+    position:relative;
+    background:url('../../assets/images/ScrollPaper.png' ) center/cover no-repeat;
+    
+    display:flex;
+    flex-direction:column;
+    align-items: center;
+    width: 1295px;
+    height:835px;
+    
+
+    padding:18rem;
+}
+
+/* .scrollFrameTop,
+.scrollFrameBot {
+position: absolute;
+left: 50%;
+transform: translateX(-50%);
+width: 80%;
+height: 60px;
+background-size: contain;
+background-repeat: no-repeat;
+}
+
+.scrollFrameTop {
+top: -30px;
+background-image: url('../../assets/images/ScrollPaper_handle.png');
+}
+.scrollFrameBot {
+bottom: -30px;
+background-image: url('../../assets/images/ScrollPaper_handle.png');
+} */
+
+/* .scrollContent {
+display: grid;
+grid-template-columns: 2fr 1fr;
+grid-gap: 2rem;
+margin-top: 2rem;
+} */
