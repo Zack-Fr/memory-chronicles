@@ -1,21 +1,20 @@
 
 .container {
 min-height: 100vh;
-padding: 2rem;
+/* padding: .5rem; */
 display: flex;
 align-items: center;
 justify-content: center;
 background-image: url('src/assets/images/desert_landscape.svg');
 background-size: cover;
 }
-.inner {
 
-/* width: 100%; */
-max-width: 1200px;
+.inner {
+width: 100%;
+/* max-width: 1200px; */
 display: flex;
 align-items: baseline;
 gap: 10rem;
-
 }
 
 .leftPane {
@@ -26,10 +25,11 @@ flex-direction: column;
 }
 
 .rightPane {
-flex: 1;
+flex: 0;
 display: flex;
 flex-direction: column;
 justify-content: center;
+
 }
 
 .pillInput {
@@ -60,12 +60,15 @@ margin-bottom: 1.5rem;
 }
 
 .attachRow {
+padding-top: 20px;
 display: flex;
+justify-content: center;
 gap: 1rem;
 }
 
 .selectorGroup {
 margin-bottom: 1.5rem;
+
 }
 
 .selectorLabel {
@@ -85,7 +88,7 @@ color: #333;
 
 .sendButton {
 margin-top: auto;
-align-self: flex-end;
+
 display: flex;
 justify-content: center;
 }

@@ -9,24 +9,28 @@ const moods =[
 ]
 
 export default function MoodSelector({ value, onChange }) {
+    const handleClick = moodValue => {
+        const newValue = value === moodValue ? null:moodValue
+        console.log ('Mood selected', newValue)
+        onChange(newValue)
+    }
 return (
-/* This code snippet is creating a group of buttons for selecting different moods. */
     <div className={styles.moodGroup}>
-    {moods.map(({ value: moodValue, Icon, label }) => (
+    {moods.map(({ value: moodValue, Icon, label }) => {
+        const isActive = value === moodValue
+        return (
         <button
-        key={moodValue}
-        type="button"
-        aria-pressed={value === moodValue}
-        className={`${styles.moodBtn} ${
-            value === moodValue ? styles.active : ''
-        }`}
-        onClick={() => 
-            onChange(value === moodValue ? null : moodValue)}
-        title={label}
+            key={moodValue}
+            type="button"
+            aria-pressed={value == moodValue}
+            className={`${styles.moodBtn} ${isActive ? styles.active : ''}`}
+            onClick={() => handleClick(moodValue)}
+            title={label}
         >
-        <Icon />
+            <Icon />
         </button>
-    ))}
+        )
+    })}
     </div>
 )
 }
