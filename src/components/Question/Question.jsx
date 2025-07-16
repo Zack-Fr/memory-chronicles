@@ -49,10 +49,10 @@ export default function Question() {
             {step < questions.length -1 ? (
                 <>
                 <button className = {styles.secondaryBtn} onClick={handleNegative}
-                    >tell me more!</button>
+                    >Tell me more!</button>
 
                 <button className = {styles.primaryBtn} onClick = {handlePositive}
-                > {step === 0 ? 'write my first Chronicle' : 'Okay, lets write!'}</button>
+                > {step === 0 ? 'Write my first Chronicle' : 'Okay, lets write!'}</button>
                 </>
             ) : (
                 <button className = {styles.primaryBtn} onClick={handlePositive}

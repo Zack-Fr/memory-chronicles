@@ -1,27 +1,33 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-
+//form functions
 import ScrollFrame from '../../components/ScrollFrame/ScrollFrame' 
 import TextInput from '../../components/Input/FormControls/TextInput/TextInput'
 import DateInput from '../../components/Input/FormControls/DateInput/DateInput'
 import TextArea from '../../components/Input/FormControls/TextArea/TextArea'
-import MoodSelector from '../../components/MoodSelector/MoodSelector'
-import VisibilitySelector from '../../components/VisibilitySelector/VisibilitySelector'
 import Button from '../../components/Button/Button'
 
+//Message features functions
+import MoodSelector from '../../components/MoodSelector/MoodSelector'
+import VisibilitySelector from '../../components/VisibilitySelector/VisibilitySelector'
+
+//User Attachments functions
 import LocationSelector from '../../components/Attachments/LocationSelector/LocationSelector'
 import AudioRecorder from '../../components/Attachments/AudioRecorder/AudioRecorder'
 import AudioUploader from '../../components/Attachments/AudioUploader/AudioUploader'
 import ImageUploader from '../../components/Attachments/ImageUploader/ImageUploader'
 
-import styles from './MessageBoard.module.css'
+//services
+import {sendLocation} from '../../services/location'
+import { uploadAttachment} from '../../services/upload'
 
+//styles
+import styles from './MessageBoard.module.css'
 
 
 export default function MessageBoard() {
     const navigate = useNavigate()
-
-    
+//form state
     const [title, setTitle] = useState('')
     const [unlockDate, setUnlockDate] = useState('')
     const [message, setMessage] = useState('')
@@ -31,31 +37,57 @@ export default function MessageBoard() {
     const [recording, setRecording] = useState(null)
     const [audioFile, setAudioFile] = useState(null)
     const [imageFile, setImageFile] = useState(null)
-
-
     const [error, setError] = useState('')
+    const [submitting, setSubmitting] = useState(false)
+
     const todayLabel= new Date().toLocaleDateString()
 
-    const handleSubmit = e=>{
+    const handleSubmit = async e=>{
         e.preventDefault()
         if(!message.trim()) {
             setError('please write something before sending.')
             return
         }
+        setError('')
+        setSubmitting(true)
 
-        const draft ={
-            title,
-            unlockDate,
-            message,
-            mood,
-            visibility,
-            location,
-            recording,
-            audioFile,
-            imageFile
+        try {
+            //send location if present
+            let locationResult = null
+            if(location){
+                locationResult = await sendLocation(location)
+            }
+            //upload attachments
+            const uploads = {}
+            if (recording){
+                const res = await uploadAttachment(recording)
+                uploads.recordingUrl = res.url
+            }
+            if(uploadFile) {
+                const res = await uploadAttachment (audioFile)
+                uploads.audioUrl =res.url
+            }
+            if (imageFile){
+                const res = await uploadAttachment(uploadFile)
+                uploads.imageUrl = res.url
+            }
+            //build the draft payload
+            const draft = {
+                title,
+                unlockDate,
+                message,
+                mood,
+                visibility,
+                ...(locationResult && {locationId: locationResult.id || locationResult}),
+                ...uploads}
+
+            navigate('/auth?mode=register&redirect=/dashboard',{state:{draft}
+            })
+        } catch (err) {
+            console.error(err)
+            setError(err.message || 'Submission Failed')
+            setSubmitting(false)
         }
-        navigate('/auth?mode=register&redirect=/dashboard',{state:{draft}
-        })
     }
 
     return (
@@ -135,7 +167,7 @@ export default function MessageBoard() {
 
                 <div className={styles.sendButton}>
                     <p></p>
-                <Button type="submit">Send</Button>
+                <Button type="submit" disabled={submitting}>{submitting ? 'Sending...' : 'Send'}</Button>
                 </div>
             </div>
         </form>
