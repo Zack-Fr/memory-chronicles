@@ -17,7 +17,7 @@ class DraftCapsuleRequest extends FormRequest
         return [
             'title'                    => 'sometimes|string|max:255',
             'body'                     => 'sometimes|string',
-            'reveal_at'                => 'sometimes|nullable|date|after:now',
+            'reveal_at'                => 'sometimes|nullable|date|after_or_equal:today',
             'mood'                     => 'sometimes|in:happy,neutral,sad',
             'privacy'                  => 'sometimes|in:private,public',
 

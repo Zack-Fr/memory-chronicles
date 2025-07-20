@@ -6,7 +6,7 @@ use App\Models\Capsule;
 use App\Models\Attachment;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Torann\Geocoder\Facades\Geocoder;
+use Geocoder\Laravel\Facades\Geocoder;
 use Carbon\Carbon;
 use Exception;
 
@@ -57,20 +57,20 @@ class CapsuleService
         }
 
         // 3) Reverse-geocode the first location attachment (mandatory)
-        $loc = $capsule->attachments()
-                    ->where('type', 'location')
-                    ->first();
-        if ($loc) {
-            try {
-                $geo = Geocoder::reverse($loc->latitude, $loc->longitude)->get();
-                if ($geo->isNotEmpty()) {
-                    $code = strtoupper($geo->first()->getCountry()->getCode());
-                    $capsule->update(['country_code' => $code]);
-                }
-            } catch (Exception $e) {
-                // optionally log: \Log::warning("Geocode failed: {$e->getMessage()}");
-            }
-        }
+        // $loc = $capsule->attachments()
+        //             ->where('type', 'location')
+        //             ->first();
+        // if ($loc) {
+        //     try {
+        //         $geo = Geocoder::reverse($loc->latitude, $loc->longitude)->get();
+        //         if ($geo->isNotEmpty()) {
+        //             $code = strtoupper($geo->first()->getCountry()->getCode());
+        //             $capsule->update(['country_code' => $code]);
+        //         }
+        //     } catch (Exception $e) {
+        //         // optionally log: \Log::warning("Geocode failed: {$e->getMessage()}");
+        //     }
+        // }
 
         return $capsule->load('attachments');
     }
@@ -191,4 +191,12 @@ class CapsuleService
             'longitude' => null,
         ]);
     }
+    public function listForUser()
+    {
+        return Capsule::with('attachments')
+        ->where('user_id', auth()->id())
+        ->where ('is_draft', false)
+        ->get();
+    }
+    
 }

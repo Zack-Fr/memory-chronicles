@@ -15,6 +15,7 @@ Route::prefix('v1')->group(function () {
         Route::get ('auth/me',      [AuthController::class, 'me']);
 
         // Capsule endpoints
+        Route::get('capsules', [CapsuleController::class, 'index']);
         Route::post('create_capsules',        [CapsuleController::class, 'store']);
         Route::get ('capsules/draft',  [CapsuleController::class, 'getDraft']);
         Route::post('capsules/draft',  [CapsuleController::class, 'upsertDraft']);

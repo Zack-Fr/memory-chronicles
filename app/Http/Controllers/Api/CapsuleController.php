@@ -45,5 +45,10 @@ class CapsuleController extends Controller
         $draft = $this->capsuleService->upsertDraft($request->validated());
         return $this->success(['draft' => $draft], 'Draft saved');
     }
+    public function index(): JsonResponse
+    {
+        $capsules = $this->capsuleService->listForUser();
+        return $this->success(['capsules' => $capsules], 'Capsules retrieved');
+    }
 }
 

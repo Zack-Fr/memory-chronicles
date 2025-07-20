@@ -17,7 +17,7 @@ class StoreCapsuleRequest extends FormRequest
         return [
             'title'                    => 'required|string|max:255',
             'body'                     => 'required|string',
-            'reveal_at'                => 'required|date|after:now',
+            'reveal_at'                => 'required|date|after_or_equal:today',
             'mood'                     => 'required|in:happy,neutral,sad',
             'privacy'                  => 'required|in:private,public',
 
@@ -41,6 +41,7 @@ class StoreCapsuleRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'reveal_at.after_or_equal' => 'The unlock date must be today or a future date.',
             'attachments.required'                       => 'You must include at least one attachment.',
             'attachments.*.base64.required_if'           => 'The file payload is required for each image/audio.',
             'attachments.*.latitude.required_if'         => 'Latitude is required for a location attachment.',
