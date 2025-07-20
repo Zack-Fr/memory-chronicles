@@ -29,10 +29,10 @@ const resumeOrRedirect = async () => {
     }
 }
 
-const handleRegister = async creds => {
+const handleRegister = async credentials => {
     setError('')
     try {
-        await register(creds)
+        await register(credentials)
         await resumeOrRedirect()
     } catch (err) {
         console.error('Register failed', err)
@@ -40,10 +40,10 @@ const handleRegister = async creds => {
     }
 }
 
-const handleLogin = async creds => {
+const handleLogin = async credentials => {
     setError('')
     try {
-    await login(creds)
+    await login(credentials)
     await resumeOrRedirect()
     } catch (err) {
     console.error('Login failed', err)

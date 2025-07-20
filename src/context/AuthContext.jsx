@@ -28,14 +28,14 @@ export function AuthProvider({ children }) {
     }, [])
     
     //register user
-    const register = async creds => {
-        const { user: newUser } = await authService.login(creds)
+    const register = async credentials => {
+        const { user: newUser } = authService.register(credentials)
         setUser(newUser)
         return newUser
     }
     //login user
-    const login = async creds => {
-        const { user: newUser} = await authService.login(creds)
+    const login = async credentials => {
+        const { user: newUser} = authService.login(credentials)
         setUser(newUser)
         return newUser
     }
