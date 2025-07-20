@@ -1,13 +1,31 @@
+// src/services/capsules.js
 import apiClient from './apiClient'
 
-//fetch all capsules belonging to the auth user
-export async function getUserCapsules() {
-const { data } = await apiClient.get('/capsules')
-return data
+/**
+ * Fetch the current draft (or null).
+ */
+export async function getDraft() {
+const res = await apiClient.get('/capsules/draft')
+return res.data.data.draft
 }
 
+/**
+ * Upsert (create or update) the user’s draft capsule.
+ */
+export async function upsertDraft(draft) {
+const res = await apiClient.post('/capsules/draft', draft)
+return res.data.data.draft
+}
 
-export async function createCapsule (draft) {
-    const { data } = await apiClient.post ('./create_capsules', draft)
-    return data
+/**
+ * Finalize and create a new capsule.
+ */
+export async function createCapsule(payload) {
+const res = await apiClient.post('/create_capsules', payload)
+return res.data.data.capsule
+}
+export async function getUserCapsules() {
+const res = await apiClient.get('/capsules')
+  // res.data.data.capsules is the array from our new endpoint
+return res.data.data.capsules
 }

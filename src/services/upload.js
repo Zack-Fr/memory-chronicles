@@ -3,7 +3,7 @@ export async function uploadAttachment(file) {
 const formData = new FormData()
 formData.append('file', file)
 
-const res = await fetch('/api/upload', {
+const res = await fetch('capsules/draft', {
     method: 'POST',
     body: formData,
     credentials: 'include'

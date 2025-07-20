@@ -39,6 +39,10 @@ min-width: 280px;
   font-family: 'YourCustomFont', cursive;
   color: #3a2a1a;
 }
+.listItem {
+  position:relative;
+  margin-bottom: .75rem;
+}
 
 .list li {
   margin-bottom: 0.75rem;

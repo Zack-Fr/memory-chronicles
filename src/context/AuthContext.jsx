@@ -1,58 +1,87 @@
-import React, { createContext, useState, useEffect, useContext} from 'react'
-import * as authService from '../services/auth'
+import React, { createContext, useState, useEffect, useContext } from 'react'
+import { useNavigate } from 'react-router-dom'
+import apiClient from '../services/apiClient'
+import { upsertDraft } from '../services/capsules'
+export const AuthContext = createContext()
 
-const AuthContext = createContext()
+export const AuthProvider = ({ children }) => {
+const navigate = useNavigate()
+const [user, setUser]     = useState(null)
+const [loading, setLoading] = useState(true)
 
-export function AuthProvider({ children }) {
-    const [user, setUser] = useState(null)
-    const [loading, setLoading] = useState(true)
+  // On mount, rehydrate user
+useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (token) {
+    apiClient.get('/auth/me')
+        .then(res => setUser(res.data.data.user))
+        .catch(() => logout())
+    }
+    setLoading(false)
+}, [])
 
-    //on mount: if there's a token, fetch the current user
-    useEffect(()=> {
-        const initAuth = async () =>{
-            try {
-                const token = localStorage.getItem('token')
-                if(token) {
-                    api.get('/auth/me')
-                    .then(({ data }) => setUser(data.data.user))
-                    .catch(() => logout())
-                }
-            } catch (err) {
-                console.error('Auth init failed', err)
-                authService.logout()
-            } finally {
-                setLoading(false)
-            }
-        }
-        initAuth()
-    }, [])
-    
-    //register user
-    const register = async credentials => {
-        const { user: newUser } = authService.register(credentials)
-        setUser(newUser)
-        return newUser
+/**
+   * After successful register, save any guest draft on the server
+   * then clear it and navigate to dashboard.
+   */
+const register = async form => {
+    const res = await apiClient.post('/auth/register', form)
+    const { token, user } = res.data.data
+
+    localStorage.setItem('token', token)
+    setUser(user)
+
+    // If guest left a draft, upsert it now:
+    const draftJson = localStorage.getItem('guestDraft')
+    if (draftJson) {
+    try {
+        const draft = JSON.parse(draftJson)
+        await upsertDraft(draft)
+        localStorage.removeItem('guestDraft')
+    } catch (e) {
+        console.error('Failed to save draft after register', e)
     }
-    //login user
-    const login = async credentials => {
-        const { user: newUser} = authService.login(credentials)
-        setUser(newUser)
-        return newUser
     }
-    //logout
-    const logout = () => {
-        authService.logout()
-        setUser(null)
-    }
-    return (
-        <AuthContext.Provider
-        value={{user, loading, register, login, logout}}
-        >
-            {children}
-        </AuthContext.Provider>
-    )
+
+    navigate('/dashboard')
 }
-//Custom hook for easy consumption
+
+/**
+   * After login, do the same draft-upsert.
+   */
+const login = async credentials => {
+    const res = await apiClient.post('/auth/login', credentials)
+    const { token, user } = res.data.data
+
+    localStorage.setItem('token', token)
+    setUser(user)
+
+    const draftJson = localStorage.getItem('guestDraft')
+    if (draftJson) {
+    try {
+        const draft = JSON.parse(draftJson)
+        await upsertDraft(draft)
+        localStorage.removeItem('guestDraft')
+    } catch (e) {
+        console.error('Failed to save draft after login', e)
+    }
+    }
+
+    navigate('/dashboard')
+}
+
+const logout = async () => {
+    await apiClient.post('/auth/logout')
+    localStorage.removeItem('token')
+    setUser(null)
+    navigate('/auth')
+}
+return (
+    <AuthContext.Provider value={{ user, loading, register, login, logout }}>
+    {children}
+    </AuthContext.Provider>
+)
+}
 export function useAuth() {
     return useContext(AuthContext)
 }

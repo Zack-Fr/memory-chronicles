@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { toast, ToastContainer } from 'react-toastify'
 //form functions
 import ScrollFrame from '../../components/ScrollFrame/ScrollFrame' 
 import TextInput from '../../components/Input/FormControls/TextInput/TextInput'
@@ -13,6 +14,7 @@ import VisibilitySelector from '../../components/VisibilitySelector/VisibilitySe
 
 //User Attachments functions
 import LocationSelector from '../../components/Attachments/LocationSelector/LocationSelector'
+import { AuthContext } from '../../context/AuthContext' 
 import AudioRecorder from '../../components/Attachments/AudioRecorder/AudioRecorder'
 import AudioUploader from '../../components/Attachments/AudioUploader/AudioUploader'
 import ImageUploader from '../../components/Attachments/ImageUploader/ImageUploader'
@@ -25,153 +27,187 @@ import { uploadAttachment} from '../../services/upload'
 import styles from './MessageBoard.module.css'
 
 
-export default function MessageBoard() {
-    const navigate = useNavigate()
-//form state
-    const [title, setTitle] = useState('')
-    const [unlockDate, setUnlockDate] = useState('')
-    const [message, setMessage] = useState('')
-    const [mood, setMood] = useState('')
-    const [visibility, setVisibility] = useState('public')
-    const [location, setLocation] = useState(null)
-    const [recording, setRecording] = useState(null)
-    const [audioFile, setAudioFile] = useState(null)
-    const [imageFile, setImageFile] = useState(null)
-    const [error, setError] = useState('')
-    const [submitting, setSubmitting] = useState(false)
+import {
+getDraft,
+upsertDraft,
+createCapsule
+} from '../../services/capsules'
 
-    const todayLabel= new Date().toLocaleDateString()
 
-    const handleSubmit = async e=>{
-        e.preventDefault()
-        if(!message.trim()) {
-            setError('please write something before sending.')
-            return
+
+export default function MessageBoardPage() {
+  const navigate = useNavigate()
+  const { user } = useContext(AuthContext)            // NEW: know if guest or auth
+
+  // Form state
+  const [title, setTitle]           = useState('')
+  const [unlockDate, setUnlockDate] = useState('')
+  const [message, setMessage]       = useState('')
+  const [mood, setMood]             = useState(null)
+  const [visibility, setVisibility] = useState('public')
+  const [location, setLocation]     = useState(null)
+
+  // UI state
+  const [errors, setErrors]       = useState({})
+  const [submitting, setSubmitting] = useState(false)
+
+  // Load existing draft *only* for authenticated users
+  useEffect(() => {
+    if (!user) return
+
+    async function loadDraft() {
+      try {
+        const draft = await getDraft()
+        if (draft) {
+          setTitle(draft.title || '')
+          setUnlockDate(draft.reveal_at?.slice(0,10) || '')
+          setMessage(draft.body || '')
+          setMood(draft.mood || null)
+          setVisibility(draft.privacy || 'public')
+          const loc = draft.attachments?.find(a => a.type === 'location')
+          if (loc) setLocation({ lat: loc.latitude, lng: loc.longitude })
         }
-        setError('')
-        setSubmitting(true)
+      } catch (err) {
+        console.error('Failed to load draft', err)
+      }
+    }
+    loadDraft()
+  }, [user])
 
-        try {
-            //send location if present
-            let locationResult = null
-            if(location){
-                locationResult = await sendLocation(location)
-            }
-            //upload attachments
-            const uploads = {}
-            if (recording){
-                const res = await uploadAttachment(recording)
-                uploads.recordingUrl = res.url
-            }
-            if(audioFile) {
-                const res = await uploadAttachment (audioFile)
-                uploads.audioUrl =res.url
-            }
-            if (imageFile){
-                const res = await uploadAttachment(imageFile)
-                uploads.imageUrl = res.url
-            }
-            //build the draft payload
-            const draft = {
-                title,
-                unlockDate,
-                message,
-                mood,
-                visibility,
-                ...(locationResult && {locationId: locationResult.id || locationResult}),
-                ...uploads}
+  // Final submit: either stash & redirect (guest) or call createCapsule (auth)
+  const handleSubmit = async e => {
+    e.preventDefault()
+    setErrors({})
 
-            navigate('/auth?mode=register&redirect=/dashboard',{state:{draft}
-            })
-        } catch (err) {
-            console.error(err)
-            setError(err.message || 'Submission Failed')
-            setSubmitting(false)
-        }
+    // client‐side required checks
+    if (!message.trim()) {
+      setErrors({ body: ['Please write something before sending.'] })
+      return
+    }
+    if (!location) {
+      setErrors({ location: ['Location is required.'] })
+      return
     }
 
-    return (
-        
-        
-        <div className={styles.container}>
-            <ScrollFrame>
-                <form onSubmit={handleSubmit} className={styles.inner}>
-                    {/*////left pane////*/}
-                    <div className={styles.leftPane}>
-                        <div className={styles.topRow}>
-                            <span className={styles.dateLabel}>Date: {todayLabel}</span>
-            {/* TextInput */}
-            <TextInput
-            id="title"
-            Label = ""
-            placeholder="Title"
-            value={title}
-            onChange={e=>setTitle(e.target.value)}
-            className={styles.pillInput}
-            />
-            {/* DateInput */}
-            <DateInput
+    const payload = {
+      title,
+      body:      message,
+      reveal_at: unlockDate,
+      mood,
+      privacy:   visibility,
+      attachments: [
+        { type:'location', latitude: location.lat, longitude: location.lng }
+      ]
+    }
+
+    // GUEST path: save locally and send to register/login
+    if (!user) {
+      localStorage.setItem('guestDraft', JSON.stringify(payload))
+      toast.info('Please sign up to save and send your message.')
+      navigate('/auth')
+      return
+    }
+
+    // AUTH path: call API
+    setSubmitting(true)
+    try {
+      await createCapsule(payload)
+      navigate('/dashboard')
+    } catch (err) {
+      const fieldErrors = err.response?.data?.errors || {}
+      setErrors(fieldErrors)
+      toast.error(err.response?.data?.message || 'Submission failed.')
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <div className={styles.container}>
+      <ToastContainer />
+      <ScrollFrame>
+        <h2 className={styles.title}>Write Your Chronicle</h2>
+
+        {/* Show top‐level errors */}
+        {errors.general && <p className={styles.error}>{errors.general[0]}</p>}
+
+        <form onSubmit={handleSubmit} className={styles.inner}>
+          {/* Left pane */}
+          <div className={styles.leftPane}>
+            <div className={styles.topRow}>
+              <span className={styles.dateLabel}>
+                Date: {new Date().toLocaleDateString()}
+              </span>
+              <TextInput
+                id="title"
+                placeholder="Title"
+                value={title}
+                onChange={e => setTitle(e.target.value)}
+                error={errors.title?.[0]}
+                className={styles.pillInput}
+              />
+              <DateInput
                 id="unlock"
-                label= ""
                 value={unlockDate}
-                onChange={e => setUnlockDate(e.target.value)}className={styles.pillInput}
-                />
+                onChange={e => setUnlockDate(e.target.value)}
+                placeholder="Unlock Date"
+                className={styles.pillInput}
+                error={errors.reveal_at?.[0]}
+              />
             </div>
-            
-            {/* textarea */}
-            <div className={styles.textAreaWrapper}>
-            <TextArea
-                id = "messageBody"
-                value = {message}
-                onChange = {e => {setMessage(e.target.value)
-                    if (error) setError('')
+
+            <div className={styles.textareaWrapper}>
+              <TextArea
+                id="messageBody"
+                value={message}
+                onChange={e => {
+                  setMessage(e.target.value)
+                  if (errors.body) setErrors({...errors, body: null})
                 }}
-                placeholder = "start typing your memory..."
+                placeholder="Start typing your memory…"
                 rows={6}
-                />
-
-                <img
-                src="/assets/clip-icon.svg"
-                alt=""
-                className={styles.clipIcon}
-                />
+                error={errors.body?.[0]}
+              />
             </div>
-            {/* attachments */}
+
             <div className={styles.attachRow}>
-                <LocationSelector value={location} onChange= {setLocation} />
-                <AudioRecorder onRecordComplete={setRecording} />
-                <AudioUploader onUpload={setAudioFile} />
-                <ImageUploader onUpload={setImageFile} />
+              <LocationSelector
+                value={location}
+                onChange={setLocation}
+                error={errors.location?.[0]}
+              />
+              {/* you can re-enable audio/image later */}
             </div>
-            </div>
+          </div>
 
-            {/*////Right pane////*/}
-            <div className={styles.rightPane}>
-                {error && <p className={styles.error}>{error}</p>}
-            
-            {/* moodSelector */}
+          {/* Right pane */}
+          <div className={styles.rightPane}>
             <div className={styles.selectorGroup}>
-            <p className={styles.selectorLabel}>What is your current mood?</p>
-                <MoodSelector value={mood} onChange={setMood} />
+              <p className={styles.selectorLabel}>What is your current mood?</p>
+              <MoodSelector
+                value={mood}
+                onChange={setMood}
+                error={errors.mood?.[0]}
+              />
             </div>
 
-                {/* visibility */}
-                <div className = {styles.selectorGroup}>
-                    <p className = {styles.selectorLabel}>
-                        Select your message visibility status:
-                    </p>
-                    <VisibilitySelector 
-                    value={visibility} 
-                    onChange={setVisibility}/>
-                </div>
-
-                <div className={styles.sendButton}>
-                    <p></p>
-                <Button type="submit" disabled={submitting}>{submitting ? 'Sending...' : 'Send'}</Button>
-                </div>
+            <div className={styles.selectorGroup}>
+              <p className={styles.selectorLabel}>Select visibility:</p>
+              <VisibilitySelector
+                value={visibility}
+                onChange={setVisibility}
+                error={errors.privacy?.[0]}
+              />
             </div>
+
+            {/* Only one “Send” button now */}
+            <div className={styles.actions}>
+              <Button type="submit" disabled={submitting}>
+                {submitting ? 'Sending…' : 'Send'}
+              </Button>
+            </div>
+          </div>
         </form>
-    </ScrollFrame>
+      </ScrollFrame>
     </div>
-    )
+  )
 }
