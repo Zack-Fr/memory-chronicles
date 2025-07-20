@@ -1,27 +1,194 @@
 <?php
 
-// namespace App\Services\User;
+namespace App\Services;
 
-// use App\Models\Task;
-// use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Models\Capsule;
+use App\Models\Attachment;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Torann\Geocoder\Facades\Geocoder;
+use Carbon\Carbon;
+use Exception;
 
-// class CapsuleService{
+class CapsuleService
+{
+    /**
+     * Create a new capsule with attachments, reverse-geocode country, and return it.
+     *
+     * @param  array  $data  Validated payload from StoreCapsuleRequest
+     * @return \App\Models\Capsule
+     * @throws \Exception on Base64 decode error or size limit breach
+     */
+    public function create(array $data): Capsule
+    {
+        $user = auth()->user();
 
-//     static function getAllCapsules($id = null){
-//         if(!$id){
-//             return Task::all();
-//         }
-//         return Task::find($id);
-//     }
+        // 1) Create the capsule record
+        $capsule = Capsule::create([
+            'user_id'      => $user->id,
+            'title'        => $data['title'],
+            'body'         => $data['body'],
+            'reveal_at'    => Carbon::parse($data['reveal_at']),
+            'mood'         => $data['mood'],
+            'privacy'      => $data['privacy'],
+            'is_draft'     => false,
+            'ip_address'   => request()->ip(),
+        ]);
 
-//     // static function createOrUpdateTask($data, $task){
-//     //     $task->category_id = 0;
-//     //     $task->title = $data["title"] || $task->title; 
-//     //     $task->description =  $id && !isset($data["description"]) ?  $task->title : $data["description"];
-//     //     $task->status = 0;
-//     //     $task->color =  $id && !isset($data["color"]) ? $task->title : $data["color"];
-//     //     $task->save();
-//     //     return $task;
-//     // }
+        // 2) Handle each attachment
+        foreach ($data['attachments'] as $item) {
+            switch ($item['type']) {
+                case 'location':
+                    $lat = $item['latitude'];
+                    $lng = $item['longitude'];
+                    $capsule->attachments()->create([
+                        'type'      => 'location',
+                        'latitude'  => $lat,
+                        'longitude' => $lng,
+                        'path'      => null,
+                    ]);
+                    break;
 
-// }
+                case 'image':
+                case 'audio':
+                    $this->storeFileAttachment($capsule, $item);
+                    break;
+            }
+        }
+
+        // 3) Reverse-geocode the first location attachment (mandatory)
+        $loc = $capsule->attachments()
+                    ->where('type', 'location')
+                    ->first();
+        if ($loc) {
+            try {
+                $geo = Geocoder::reverse($loc->latitude, $loc->longitude)->get();
+                if ($geo->isNotEmpty()) {
+                    $code = strtoupper($geo->first()->getCountry()->getCode());
+                    $capsule->update(['country_code' => $code]);
+                }
+            } catch (Exception $e) {
+                // optionally log: \Log::warning("Geocode failed: {$e->getMessage()}");
+            }
+        }
+
+        return $capsule->load('attachments');
+    }
+
+    /**
+     * Create or update the authenticated user's single draft.
+     *
+     * @param  array  $data  Partial payload from DraftCapsuleRequest
+     * @return \App\Models\Capsule
+     * @throws \Exception on file errors
+     */
+    public function upsertDraft(array $data): Capsule
+    {
+        $user = auth()->user();
+
+        // 1) Find or new draft
+        $capsule = Capsule::firstOrNew([
+            'user_id'  => $user->id,
+            'is_draft' => true,
+        ]);
+
+        // 2) Update only given fields
+        foreach (['title','body','reveal_at','mood','privacy'] as $field) {
+            if (array_key_exists($field, $data)) {
+                $capsule->$field = $field === 'reveal_at'
+                    ? Carbon::parse($data[$field])
+                    : $data[$field];
+            }
+        }
+        $capsule->ip_address = request()->ip();
+        $capsule->is_draft   = true;
+        $capsule->save();
+
+        // 3) If attachments provided, replace existing
+        if (array_key_exists('attachments', $data)) {
+            $capsule->attachments()->delete();
+            foreach ($data['attachments'] as $item) {
+                if ($item['type'] === 'location') {
+                    $capsule->attachments()->create([
+                        'type'      => 'location',
+                        'latitude'  => $item['latitude'],
+                        'longitude' => $item['longitude'],
+                        'path'      => null,
+                    ]);
+                } else {
+                    $this->storeFileAttachment($capsule, $item);
+                }
+            }
+        }
+
+        // 4) Potentially update country_code for draft too
+        $loc = $capsule->attachments()
+                    ->where('type','location')
+                    ->first();
+        if ($loc) {
+            try {
+                $geo = Geocoder::reverse($loc->latitude, $loc->longitude)->get();
+                if ($geo->isNotEmpty()) {
+                    $capsule->country_code = strtoupper($geo->first()->getCountry()->getCode());
+                    $capsule->save();
+                }
+            } catch (Exception $e) {
+                // log if desired
+            }
+        }
+
+        return $capsule->load('attachments');
+    }
+
+    /**
+     * Retrieve the authenticated user's current draft, if any.
+     *
+     * @return \App\Models\Capsule|null
+     */
+    public function getDraft(): ?Capsule
+    {
+        return Capsule::with('attachments')
+            ->where('user_id', auth()->id())
+            ->where('is_draft', true)
+            ->first();
+    }
+
+    /**
+     * Decode & store a Base64 file attachment, enforcing size limits.
+     *
+     * @param  Capsule  $capsule
+     * @param  array    $item     ['type','filename','base64']
+     * @throws \Exception on invalid Base64 or size breach
+     */
+    protected function storeFileAttachment(Capsule $capsule, array $item): void
+    {
+        $type     = $item['type'];    // 'image' or 'audio'
+        $bytes    = base64_decode($item['base64'], true);
+        $filename = $item['filename'];
+
+        if ($bytes === false) {
+            throw new Exception("Invalid Base64 payload for {$filename}");
+        }
+
+        $max = $type === 'image'
+            ? 5 * 1024 * 1024
+            : 10 * 1024 * 1024;
+
+        if (strlen($bytes) > $max) {
+            throw new Exception("{$filename} exceeds the {$type} size limit");
+        }
+
+        // ensure unique
+        $stored = Str::random(8) . "_{$filename}";
+        $path   = "capsules/{$capsule->id}/{$stored}";
+
+        Storage::put($path, $bytes);
+
+        $capsule->attachments()->create([
+            'type'      => $type,
+            'path'      => $path,
+            'latitude'  => null,
+            'longitude' => null,
+        ]);
+    }
+}

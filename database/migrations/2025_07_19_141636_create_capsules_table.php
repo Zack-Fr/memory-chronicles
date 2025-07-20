@@ -15,20 +15,25 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')
                     ->constrained()
-                    ->onDelete('cascade');
+                    ->onDelete('cascade')->nullable();
 
             $table->string('title');
             $table->text('body');
             $table->timestamp('reveal_at');
 
-            $table->enum('mood',['happy','sad','neutral'])
-                ->default('neutral');
+            $table->enum('mood',['happy','sad','neutral']);
 
-            $table->enum('privacy', ['private', 'public'])
-                ->default('private');
+            $table->enum('privacy', ['private', 'public']);
+            //draft flag
+            $table->boolean('is_draft')->default(false);
+            // Filled in by reverse-geocode
+            $table->string('country_code', 2)->nullable();
+            //record ip
+            $table->ipAddress('ip_address');
 
-            $table->text('tags')->nullable();
-            $table->string('ip_address', 45);
+            // Indexes for common filters
+            $table->index('reveal_at');
+            $table->index('privacy');
 
             $table->timestamps();
         });

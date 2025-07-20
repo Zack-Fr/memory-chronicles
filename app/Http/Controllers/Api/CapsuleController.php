@@ -1,25 +1,49 @@
 <?php
 
-namespace App\Http\Controllers\User;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use  App\Services\User\CapsuleService;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreCapsuleRequest;
+use App\Http\Requests\DraftCapsuleRequest;
+use App\Services\CapsuleService;
+use App\Traits\ApiResponseTrait;
+use Illuminate\Http\JsonResponse;
 
 class CapsuleController extends Controller
 {
-        function getAllCapsules(){
-        $tasks = CapsuleController::getAllCapsules();
-        return $this->responseJSON($tasks);
+    use ApiResponseTrait;
+
+    public function __construct(protected CapsuleService $capsuleService)
+    {
+        // ensure all methods require auth
+        // $this->middleware('auth:api');
     }
 
-    // function addOrUpdateTask(Request $request, $id = null){
-    //     $task = new Task;
-    //     if($id){
-    //         $task = TaskService::getAllTasks($id);
-    //     }
+    /**
+     * Create a new capsule (final submit).
+     */
+    public function store(StoreCapsuleRequest $request): JsonResponse
+    {
+        $capsule = $this->capsuleService->create($request->validated());
+        return $this->success(['capsule' => $capsule], 'Capsule created', 201);
+    }
 
-    //     $task = TaskService::createOrUpdateTask($request, $task);
-    //     return $this->responseJSON($task);
-    // }
+    /**
+     * Fetch the user's current draft (or null).
+     */
+    public function getDraft(): JsonResponse
+    {
+        $draft = $this->capsuleService->getDraft();
+        return $this->success(['draft' => $draft]);
+    }
+
+    /**
+     * Create or update the draft capsule.
+     */
+    public function upsertDraft(DraftCapsuleRequest $request): JsonResponse
+    {
+        $draft = $this->capsuleService->upsertDraft($request->validated());
+        return $this->success(['draft' => $draft], 'Draft saved');
+    }
 }
+

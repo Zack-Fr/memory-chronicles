@@ -101,7 +101,10 @@ return [
     |
     */
 
-    'ttl' => env('JWT_TTL', 60),
+    /* The line `'ttl' => env('JWT_TTL', 60),` is setting the time to live (TTL) for the JWT token. It
+    is retrieving the value of `JWT_TTL` from the environment configuration file (`.env` file) and
+    if that value is not found, it defaults to 60 minutes (1 hour). */
+    'ttl' =>(int) env('JWT_TTL', 1200),
 
     /*
     |--------------------------------------------------------------------------

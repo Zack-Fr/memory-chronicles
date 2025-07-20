@@ -43,4 +43,14 @@ class AuthService
     {
         return JWTAuth::refresh(JWTAuth::getToken());
     }
+
+    public function me(): User
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        if (! $user) {
+            throw new AuthenticationException('User not authenticated');
+        }
+        return $user;
+    }
 }
+

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\LoginRequest;
-use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
 use App\Services\AuthService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\JsonResponse;
@@ -14,7 +14,9 @@ class AuthController extends Controller
 {
     use ApiResponseTrait;
 
-    public function __construct(protected AuthService $authService) {}
+    public function __construct(protected AuthService $authService)
+    {
+    }
 
     public function register(RegisterRequest $request): JsonResponse
     {
@@ -42,5 +44,14 @@ class AuthController extends Controller
     {
         $token = $this->authService->refresh();
         return $this->success(['token' => $token], 'Token refreshed');
+    }
+    public function me(): JsonResponse
+    {
+        try {
+            $user = $this->authService->me();
+            return $this->success(['user' => $user], 'User retrieved');
+        } catch (JWTException $e) {
+            return $this->error('Token invalid or expired', 401);
+        }
     }
 }

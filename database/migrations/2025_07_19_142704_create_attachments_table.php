@@ -16,14 +16,14 @@ return new class extends Migration
                 ->onDelete('cascade');
 
             // location | image | audio | other
-            $table->enum('type', ['location','image','audio','other']);
+            $table->enum('type', ['location','image','audio']);
 
             // path on disk where the Base64‐decoded file lives
-            $table->string('path');
+            $table->string('path')->nullable();
 
             // only for type = location
-            $table->decimal('latitude', 10, 8)->nullable();
-            $table->decimal('longitude', 11, 8)->nullable();
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
 
             $table->timestamps();
         });
