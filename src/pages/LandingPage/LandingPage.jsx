@@ -6,14 +6,14 @@ import styles from './LandingPage.module.css';
 export default function LandingPage () {
     return (
         <div className={styles.hero}>
-            
             <div className={styles.content}>
             {<Question />}
             </div>
 
+            
             <div className={styles.backgroundPlaceholder}>
-            {<Navbar />}
             </div>
+            <Navbar></Navbar>
         </div>
     )
 }

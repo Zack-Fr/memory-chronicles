@@ -45,8 +45,9 @@
 }
 
 .secondaryBtn {
-    background: rgba(202, 202, 202, 0.226);
-    color: #a7a6a4;
+    background: rgb(12, 24, 48);
+    font-size: large;
+    color: #ffffff;
     border: 1px solid #d4a017;
     padding: 0.5rem 1rem;
     border-radius: 1rem;

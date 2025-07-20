@@ -63,12 +63,12 @@ export default function MessageBoard() {
                 const res = await uploadAttachment(recording)
                 uploads.recordingUrl = res.url
             }
-            if(uploadFile) {
+            if(audioFile) {
                 const res = await uploadAttachment (audioFile)
                 uploads.audioUrl =res.url
             }
             if (imageFile){
-                const res = await uploadAttachment(uploadFile)
+                const res = await uploadAttachment(imageFile)
                 uploads.imageUrl = res.url
             }
             //build the draft payload
