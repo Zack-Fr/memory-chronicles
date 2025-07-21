@@ -2,11 +2,13 @@
 
 namespace App\Services;
 
-use App\Models\Capsule;
-use App\Models\Attachment;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use App\Exceptions\CapsuleLockedException;
 use Geocoder\Laravel\Facades\Geocoder;
+use Illuminate\Support\Str;
+use App\Models\Capsule;
 use Carbon\Carbon;
 use Exception;
 
@@ -198,5 +200,25 @@ class CapsuleService
         ->where ('is_draft', false)
         ->get();
     }
-    
+    /**
+     * Fetch a single, non-draft capsule that has been unlocked.
+     *
+     * @throws ModelNotFoundException
+     * @throws CapsuleLockedException
+     */
+    public function show(int $id): Capsule
+    {
+        $capsule = Capsule::with('attachments')
+            ->where('id', $id)
+            ->where('is_draft', false)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        // Business logic: only unlocked capsules
+        if ($capsule->reveal_at->gt(now())) {
+            throw new CapsuleLockedException($capsule->reveal_at);
+        }
+
+        return $capsule;
+    }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Exceptions\CapsuleLockedException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCapsuleRequest;
 use App\Http\Requests\DraftCapsuleRequest;
@@ -49,6 +51,17 @@ class CapsuleController extends Controller
     {
         $capsules = $this->capsuleService->listForUser();
         return $this->success(['capsules' => $capsules], 'Capsules retrieved');
+    }
+    public function show($id): JsonResponse
+    {
+        try {
+            $capsule = $this->capsuleService->show((int) $id);
+            return $this->success(['capsule' => $capsule], 'Capsule retrieved');
+        } catch (ModelNotFoundException) {
+            return $this->error('Capsule not found.', 404);
+        } catch (CapsuleLockedException $e) {
+            return $this->error($e->getMessage(), 403);
+        }
     }
 }
 
