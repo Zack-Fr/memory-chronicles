@@ -24,9 +24,6 @@ import ImageUploader from '../../components/Attachments/ImageUploader/ImageUploa
 import styles from './MessageBoard.module.css'
 
 
-
-
-
 export default function MessageBoardPage() {
   const navigate = useNavigate()
   const { user } = useContext(AuthContext)            // NEW: know if guest or auth
@@ -46,6 +43,7 @@ export default function MessageBoardPage() {
   const [errors, setErrors]       = useState({})
   const [submitting, setSubmitting] = useState(false)
   const [saving, setSaving]         = useState(false)
+  
   // Load existing draft *only* for authenticated users
   useEffect(() => {
     if (!user) return

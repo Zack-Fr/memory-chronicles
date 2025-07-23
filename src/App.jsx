@@ -13,7 +13,6 @@ import PublicListPage from './pages/PublicListPage/PublicListPage'
 function App() {
   return (
     <AuthProvider>
-      
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/write" element={<MessageBoardPage />} />
