@@ -1,0 +1,92 @@
+.container {
+min-height: 100vh;
+padding: 2rem;
+background-image: url('../../assets/images/Landscape_v02.svg');
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.locked {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 12rem;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.messageText {
+  font-family: 'YourCustomFont', cursive;
+  font-size: 1.1rem;
+  color: #3a2a1a;
+  line-height: 1.5;
+}
+
+.iconRow {
+  display: flex;
+  gap: 1rem;
+}
+
+.iconBtn {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background:
+    url('/assets/pill-texture.png') center/cover no-repeat,
+    #f3e2bf;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+  cursor: default;
+}
+
+.attachRow {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.image {
+  max-width: 200px;
+  border-radius: 0.5rem;
+}
+
+.audio {
+  max-width: 200px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.message {
+  font-size: 1.2rem;
+  color: #3a2a1a;
+  text-align: center;
+}
+
+.messageError {
+  font-size: 1.2rem;
+  color: #d4380d;
+  text-align: center;
+}
+
+@media (max-width: 800px) {
+  .content {
+    gap: 1rem;
+  }
+  .attachRow {
+    flex-direction: column;
+  }
+  .actions {
+    justify-content: center;
+  }
+}

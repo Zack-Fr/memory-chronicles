@@ -1,0 +1,20 @@
+.form {
+display: flex;
+flex-direction: column;
+gap: 1rem;
+}
+
+.forgotWrapper {
+text-align: right;
+}
+
+.forgot {
+font-size: 0.9rem;
+color: #3a2a1a;
+text-decoration: underline;
+cursor: pointer;
+}
+
+.forgot:hover {
+filter: brightness(1.1);
+}

@@ -1,0 +1,40 @@
+.visGroup {
+display: flex;
+gap: 1rem;
+}
+
+.visBtn {
+display: flex;
+align-items: center;
+justify-content: center;
+width: 3rem;
+height: 3rem;
+border-radius: 50%;
+background:
+    url('/assets/pill-texture.png') center/cover no-repeat,
+    #f3e2bf;
+border: 1px solid rgba(0, 0, 0, 0.2);
+box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+color: #3a2a1a;
+cursor: pointer;
+transition: box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.visBtn:hover {
+filter: brightness(1.1);
+box-shadow:
+    0 0 8px rgba(212, 136, 6, 0.8),
+    inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* .active {
+box-shadow:
+    0 0 12px rgba(212, 136, 6, 0.9),
+    inset 0 2px 4px rgba(0, 0, 0, 0.2);
+} */
+
+.visBtn[aria-pressed='true'] {
+box-shadow:
+    0 0 12px rgba(0, 200, 0, 0.9),
+    inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
