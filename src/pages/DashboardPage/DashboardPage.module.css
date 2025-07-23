@@ -15,6 +15,7 @@ gap: 2rem;
 flex-wrap: wrap;
 max-width: 1200px;
 width: 100%;
+align-items: center;
 }
 
 /* Each scroll */
@@ -25,18 +26,45 @@ min-width: 280px;
 
 /* Title inside the scroll */
 .scrollTitle {
-  font-family: 'YourCustomFont', cursive;
+  font-family: "Oleo Script", system-ui;
   font-size: 1.25rem;
   color: #3a2a1a;
   text-align: center;
   margin-bottom: 1rem;
 }
+/* Left arrow: vertically centered, left side */
+.arrowLeft {
+  position: absolute;
+  left: 16px;      /* adjust spacing as needed */
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  z-index: 10;
+}
 
+/* Right arrow: vertically centered, right side */
+.arrowRight {
+  position: absolute;
+  right: 50px; 
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  z-index: 10;
+}
+
+/* Optional: style the img inside links */
+.arrowLeft img,
+.arrowRight img {
+  background-image: url('../../assets/images/Nav_Arrow.svg') no-repeat;
+  display: block;
+  width: 200px;    /* or whatever size fits your design */
+  height: 200px;
+}
 /* Numbered list styling */
 .list {
   padding-left: 1.5rem;
   list-style: decimal inside;
-  font-family: 'YourCustomFont', cursive;
+  font-family: "Oleo Script", system-ui;
   color: #3a2a1a;
 }
 .listItem {

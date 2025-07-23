@@ -8,7 +8,7 @@ export default function AudioUploader ({ onUpload }) {
     
 
     const handleChange = e => {
-        const file = e.target.file[0]
+        const file = e.target.files[0]
         if (file) onUpload(file)
     }
 

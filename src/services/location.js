@@ -1,4 +1,4 @@
-// You can wire this up to your Laravel endpoint later
+
 export async function sendLocation(coords) {
 const res = await fetch('/api/location', {
     method: 'POST',

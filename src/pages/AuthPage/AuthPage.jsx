@@ -1,21 +1,33 @@
-import React, { useState } from 'react'
-import ScrollFrame from '../../components/ScrollFrame/ScrollFrame'
+import React, { useState, useEffect } from 'react'
+import ScrollFrame from '../../components/ScrollFrame/ScrollFrameAuthPage'
 import { useNavigate, useLocation } from 'react-router-dom'
 import Button from '../../components/Button/Button'
 import styles from './AuthPage.module.css'
 import RegisterForm from './RegisterForm'
 import LoginForm from './LoginForm'
 import { useAuth } from '../../context/AuthContext'
-import { createCapsule } from '../../services/capsules'
+import { createCapsule, getPublicCapsules } from '../../services/capsules'
 
 export default function AuthPage() {
-const [mode, setMode] = useState('') // register or 'login'
+const [mode, setMode] = useState('register') // register
 const [error, setError] = useState('')
+const [publicCount, setPublicCount] = useState(0)
 const{ register, login } = useAuth()
 const navigate = useNavigate() 
 const location = useLocation()
 const draft = location.state?.draft
-
+// Fetch real‐time public count
+useEffect(() => {
+    const fetchCount = async () => {
+    try {
+        const data = await getPublicCapsules()
+        setPublicCount(data.length)
+    } catch (err) {
+        console.error('Failed to load public count', err)
+    }
+    }
+    fetchCount()
+}, [])
 //after auth, if there's a draft, create the capsule before redirect
 const resumeOrRedirect = async () => {
     try {
@@ -91,15 +103,10 @@ return (
 
           {/* RIGHT PANE: Stats & Quick Register */}
         <div className={styles.rightPane}>
-            <img
-            src="/assets/globe.svg"
-            alt="Globe"
-            className={styles.globe}
-            />
             <p className={styles.statsLabel}>Number of Public Chronicles:</p>
-            <p className={styles.statsNumber}>23,500</p>
-            <Button onClick={() => setMode('register')}>
-            Register
+            <p className={styles.statsNumber}>{publicCount}</p>
+            <Button onClick={() => navigate('/map')}>
+            World Map
             </Button>
         </div>
         </div>

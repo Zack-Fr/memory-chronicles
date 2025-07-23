@@ -1,113 +1,116 @@
-import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import ScrollFrame from '../../components/ScrollFrame/ScrollFrame'
-import { getUserCapsules } from '../../services/capsules'
-import Countdown from '../../components/Countdown/Countdown'
-import styles from './DashboardPage.module.css'
+import React, { useEffect, useState, useRef } from 'react'
+import { useNavigate, Link }                from 'react-router-dom'
+import { toast, ToastContainer }             from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
+import ScrollFrameVertical                  from '../../components/ScrollFrame/ScrollFrameVertical'
+import Countdown                            from '../../components/Countdown/Countdown'
+import { getUserCapsules }                  from '../../services/capsules'
+import styles                               from './DashboardPage.module.css'
+
+// your arrow SVGs
+import leftArrow  from '../../assets/images/Nav_ArrowLeft.svg'
+import rightArrow from '../../assets/images/Nav_ArrowRight.svg'
 
 export default function DashboardPage() {
-const [capsules, setCapsules] = useState([])
-const [loading, setLoading] = useState(true)
-const [error, setError] = useState('')
-const [hoveredId, setHoveredId] = useState(null)
+  const navigate = useNavigate()
+  const [capsules, setCapsules] = useState([])
+  const [loading, setLoading]   = useState(true)
+  const [error, setError]       = useState('')
+  const [hoveredId, setHoveredId] = useState(null)
+
+  // ref to scroll the active item into view if desired
+const listRef = useRef(null)
 
 useEffect(() => {
-    const fetchCapsules = async () => {
-    try {
-        const data = await getUserCapsules()
-        setCapsules(data)
-    } catch (err) {
-        console.error('Failed to load capsules', err)
-        setError('Failed to load your capsules.')
-    } finally {
-        setLoading(false)
-    }
-    }
-    fetchCapsules()
+    getUserCapsules()
+    .then(data => setCapsules(data))
+    .catch(() => setError('Failed to load your capsules.'))
+    .finally(() => setLoading(false))
 }, [])
 
-if (loading) return <p className={styles.message}>Loading your capsules…</p>
-if (error)   return <p className={styles.messageError}>{error}</p>
+const handleClick = c => {
+    const revealDate = new Date(c.reveal_at)
+    if (revealDate > new Date()) {
+      toast.info(`Unlocks at ${revealDate.toLocaleString()}`, {
+        position: 'top-center'
+      })
+    } else {
+      navigate(`/capsules/${c.id}`)
+    }
+  }
 
-const publicCapsules = capsules.filter(c => c.privacy === 'public')
-const privateCapsules = capsules.filter(c => c.privacy === 'private')
-const renderList = list => (
-    <ol className={styles.list}>
-    {list.map(c => (
-        <li
-        key={c.id}
-        className={styles.listItem}
-        onMouseEnter={() => setHoveredId(c.id)}
-        onMouseLeave={() => setHoveredId(null)}
-        >
-        <Link to={`/capsule/${c.id}`} className={styles.link}>
-            {c.title}
-        </Link>
-        {hoveredId === c.id && (
-            <Countdown targetDate={c.revealed_at} />
-        )}
-        </li>
-    ))}
+  if (loading) return <p className={styles.message}>Loading your capsules…</p>
+  if (error)   return <p className={styles.messageError}>{error}</p>
+
+  const publicCapsules  = capsules.filter(c => c.privacy === 'public')
+  const privateCapsules = capsules.filter(c => c.privacy === 'private')
+
+  const renderList = list => (
+    <ol className={styles.list} ref={listRef}>
+      {list.map(c => {
+        const revealDate = new Date(c.reveal_at)
+        const isUnlocked = revealDate <= new Date()
+        return (
+          <li
+            key={c.id}
+            className={styles.listItem}
+            onMouseEnter={() => setHoveredId(c.id)}
+            onMouseLeave={() => setHoveredId(null)}
+          >
+            <button
+              type="button"
+              onClick={() => handleClick(c)}
+              className={styles.link}
+              title={isUnlocked
+                ? 'Click to read'
+                : `Unlocks on ${revealDate.toLocaleDateString()}`}
+            >
+              {c.title}
+            </button>
+
+            {hoveredId === c.id && !isUnlocked && (
+              <Countdown targetDate={c.reveal_at} />
+            )}
+
+            {!isUnlocked && (
+              <span className={styles.lockBadge}>🔒</span>
+            )}
+          </li>
+        )
+      })}
     </ol>
-)
-return (
+  )
+
+  return (
     <div className={styles.container}>
-    <div className={styles.inner}>
-        <ScrollFrame className={styles.scroll}>
-        <h3 className={styles.scrollTitle}>Public Chronicles</h3>
-        {publicCapsules.length
+      <ToastContainer />
+
+      {/* ← back to map */}
+      <Link to="/map" className={styles.arrowLeft} data-tooltip="World Map">
+        <img src={leftArrow} alt="" />
+      </Link>
+
+      <div className={styles.inner}>
+        <ScrollFrameVertical className={styles.scroll}>
+          <h3 className={styles.scrollTitle}>Public Chronicles</h3>
+          {publicCapsules.length
             ? renderList(publicCapsules)
             : <p className={styles.message}>No public capsules yet.</p>}
-        </ScrollFrame>
+        </ScrollFrameVertical>
 
-        <ScrollFrame className={styles.scroll}>
-        <h3 className={styles.scrollTitle}>Private Chronicles</h3>
-        {privateCapsules.length
+        <ScrollFrameVertical className={styles.scroll}>
+          <h3 className={styles.scrollTitle}>Private Chronicles</h3>
+          {privateCapsules.length
             ? renderList(privateCapsules)
             : <p className={styles.message}>No private capsules yet.</p>}
-        </ScrollFrame>
+        </ScrollFrameVertical>
+      </div>
+
+      {/* → write a new one */}
+      <Link to="/write" className={styles.arrowRight} data-tooltip="Write Your Own">
+        <img src={rightArrow} alt="" />
+      </Link>
     </div>
-    </div>
-)
+  )
 }
-
-
-
-
-
-
-
-
-
-// return (
-//     <div className={styles.container}>
-//     <div className={styles.inner}>
-//         <ScrollFrame className={styles.scroll}>
-//         <h3 className={styles.scrollTitle}>Public Chronicles</h3>
-//         <ol className={styles.list}>
-//             {publicCapsules.map(c => (
-//             <li key={c.id}>
-//                 <Link to={`/capsule/${c.id}`} className={styles.link}>
-//                 {c.title}
-//                 </Link>
-//             </li>
-            
-//             ))}
-//         </ol>
-//         </ScrollFrame>
-
-//         <ScrollFrame className={styles.scroll}>
-//         <h3 className={styles.scrollTitle}>Private Chronicles</h3>
-//         <ol className={styles.list}>
-//             {privateCapsules.map(c => (
-//             <li key={c.id}>
-//                 <Link to={`/capsule/${c.id}`} className={styles.link}>
-//                 {c.title}
-//                 </Link>
-//             </li>
-//             ))}
-//         </ol>
-//         </ScrollFrame>
-//     </div>
-//     </div>
-// )

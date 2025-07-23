@@ -1,0 +1,14 @@
+.ScrollFrame {
+  position: relative;
+  background: url("../../assets/images/ScrollPaper_Body.png") center no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* width: 1059px; */
+  width:100%;
+  /* //1059.683 */
+  /* max-height: 500px; */
+  height: 683px;
+  padding: 1rem;
+  /* margin-top: 10px; */
+}

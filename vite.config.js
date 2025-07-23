@@ -6,14 +6,19 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      // any request to /api/* will be forwarded to your Laravel app
+      // Existing API proxy:
       '/api': {
         target: 'http://localhost:8000',
         changeOrigin: true,
-        secure: false,
-        // keep /api/v1/... intact
-        rewrite: (path) => path.replace(/^\/api/, '/api'),
+        rewrite: path => path.replace(/^\/api/, '/api'),
+      },
+      // New attachments proxy:
+      '/attachments': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/attachments/, '/api/v1/attachments'),
       },
     },
   },
 })
+

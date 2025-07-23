@@ -1,5 +1,5 @@
 import React from "react";
-import styles from './ScrollFrame.module.css'
+import styles from './ScrollFrameAuthPage.module.css'
 
 
 
@@ -16,7 +16,7 @@ return (
         : [])
     ].join(' ')}
     >
-            <img src = "../../assets/images/Navbar_Art.png"
+            <img src = "../../assets/images/NavBar_art.png"
             alt = ""
             className={styles.rollerTop}
             />
@@ -24,7 +24,7 @@ return (
             <div className={styles.content}>{children}</div>
             {/* Bottom roller graphic */}
             <img
-            src="../../assets/images/Navbar_Art.png"
+            src="../../assets/images/NavBar_art.png"
             alt=""
             className={styles.rollerBottom}
             />

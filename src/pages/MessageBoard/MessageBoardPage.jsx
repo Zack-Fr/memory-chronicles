@@ -11,6 +11,7 @@ import Button from '../../components/Button/Button'
 //Message features functions
 import MoodSelector from '../../components/MoodSelector/MoodSelector'
 import VisibilitySelector from '../../components/VisibilitySelector/VisibilitySelector'
+import {getDraft,upsertDraft,createCapsule} from '../../services/capsules'
 
 //User Attachments functions
 import LocationSelector from '../../components/Attachments/LocationSelector/LocationSelector'
@@ -19,19 +20,10 @@ import AudioRecorder from '../../components/Attachments/AudioRecorder/AudioRecor
 import AudioUploader from '../../components/Attachments/AudioUploader/AudioUploader'
 import ImageUploader from '../../components/Attachments/ImageUploader/ImageUploader'
 
-//services
-import {sendLocation} from '../../services/location'
-import { uploadAttachment} from '../../services/upload'
-
 //styles
 import styles from './MessageBoard.module.css'
 
 
-import {
-getDraft,
-upsertDraft,
-createCapsule
-} from '../../services/capsules'
 
 
 
@@ -47,76 +39,141 @@ export default function MessageBoardPage() {
   const [visibility, setVisibility] = useState('public')
   const [location, setLocation]     = useState(null)
 
+  const [recording, setRecording]   = useState(null)  // from AudioRecorder (Blob)
+  const [audioFile, setAudioFile]   = useState(null)  // from AudioUploader (File)
+  const [imageFile, setImageFile]   = useState(null)  // from ImageUploader (File)
   // UI state
   const [errors, setErrors]       = useState({})
   const [submitting, setSubmitting] = useState(false)
-
+  const [saving, setSaving]         = useState(false)
   // Load existing draft *only* for authenticated users
   useEffect(() => {
     if (!user) return
-
-    async function loadDraft() {
+    (async () => {
       try {
         const draft = await getDraft()
         if (draft) {
           setTitle(draft.title || '')
           setUnlockDate(draft.reveal_at?.slice(0,10) || '')
           setMessage(draft.body || '')
-          setMood(draft.mood || null)
-          setVisibility(draft.privacy || 'public')
-          const loc = draft.attachments?.find(a => a.type === 'location')
+          setMood(draft.mood)
+          setVisibility(draft.privacy)
+          const loc = draft.attachments.find(a => a.type==='location')
           if (loc) setLocation({ lat: loc.latitude, lng: loc.longitude })
+
+          // find image/audio attachments in draft
+          const img = draft.attachments.find(a => a.type==='image')
+          if (img) setImageFile({ url: img.url, filename: img.filename })
+          const aud = draft.attachments.find(a => a.type==='audio')
+          if (aud) setAudioFile({ url: aud.url, filename: aud.filename })
         }
-      } catch (err) {
-        console.error('Failed to load draft', err)
-      }
-    }
-    loadDraft()
+      } catch{}
+    })()
   }, [user])
 
-  // Final submit: either stash & redirect (guest) or call createCapsule (auth)
-  const handleSubmit = async e => {
-    e.preventDefault()
-    setErrors({})
 
-    // client‐side required checks
-    if (!message.trim()) {
-      setErrors({ body: ['Please write something before sending.'] })
-      return
-    }
-    if (!location) {
-      setErrors({ location: ['Location is required.'] })
-      return
+    // helper to convert File or Blob → Base64
+  const toBase64 = fileOrBlob => new Promise((res, rej) => {
+    const reader = new FileReader()
+    reader.onload = () => res(reader.result.split(',')[1])
+    reader.onerror = e => rej(e)
+    reader.readAsDataURL(fileOrBlob)
+  })
+
+  // common: build attachments array
+  const buildAttachments = async () => {
+    const atts = []
+
+    // location
+    if (location) {
+      atts.push({
+        type: 'location',
+        latitude:  location.lat,
+        longitude: location.lng
+      })
     }
 
+    // image
+    if (imageFile) {
+      // imageFile might be a Blob from recorder or a File from uploader
+      const { name, file, url } = imageFile.filename ? imageFile : { file: imageFile, name: imageFile.name }
+      const base64 = await toBase64(file)
+      atts.push({ type:'image', filename: name, base64 })
+    }
+
+    // audio
+    if (recording || audioFile) {
+      const blobOrFile = recording || audioFile.file || audioFile
+      const name = recording
+        ? `recording-${Date.now()}.webm`
+        : audioFile.filename || audioFile.name
+      const base64 = await toBase64(blobOrFile)
+      atts.push({ type:'audio', filename: name, base64 })
+    }
+
+    return atts
+  }
+
+  // Upsert draft (debounced in real code!)
+  const handleSaveDraft = async () => {
+    setSaving(true)
     const payload = {
       title,
       body:      message,
       reveal_at: unlockDate,
       mood,
       privacy:   visibility,
-      attachments: [
-        { type:'location', latitude: location.lat, longitude: location.lng }
-      ]
+      attachments: await buildAttachments()
     }
+    try {
+      await upsertDraft(payload)
+      toast.success('Draft saved!')
+    } catch {
+      toast.error('Failed to save draft.')
+    }
+    setSaving(false)
+  }
 
-    // GUEST path: save locally and send to register/login
-    if (!user) {
-      localStorage.setItem('guestDraft', JSON.stringify(payload))
-      toast.info('Please sign up to save and send your message.')
-      navigate('/auth')
+  // Final submit
+  const handleSubmit = async e => {
+    e.preventDefault()
+    setErrors({})
+
+    // same validations...
+    if (!message.trim()) {
+      setErrors({ body:['Please write something.'] })
+      return
+    }
+    if (!location) {
+      setErrors({ location:['Location required.'] })
       return
     }
 
-    // AUTH path: call API
     setSubmitting(true)
+    const payload = {
+      title,
+      body:      message,
+      reveal_at: unlockDate,
+      mood,
+      privacy:   visibility,
+      attachments: await buildAttachments()
+    }
+
+    if (!user) {
+      // guest: stash and redirect (same as before)...
+      localStorage.setItem('guestDraft', JSON.stringify(payload))
+      toast.info('Please register to save your message.')
+      navigate('/auth',{ state:{ draft:payload } })
+      return
+    }
+
     try {
       await createCapsule(payload)
       navigate('/dashboard')
     } catch (err) {
-      const fieldErrors = err.response?.data?.errors || {}
-      setErrors(fieldErrors)
-      toast.error(err.response?.data?.message || 'Submission failed.')
+      const errs = err.response?.data?.errors || {}
+      setErrors(errs)
+      toast.error(err.response?.data?.message||'Send failed.')
       setSubmitting(false)
     }
   }
@@ -175,7 +232,9 @@ export default function MessageBoardPage() {
                 onChange={setLocation}
                 error={errors.location?.[0]}
               />
-              {/* you can re-enable audio/image later */}
+              <AudioRecorder onRecordComplete={blob => setRecording(blob)} />
+                <AudioUploader  onUpload={file => setAudioFile(file)} />
+                  <ImageUploader  onUpload={file => setImageFile(file)} />
             </div>
           </div>
 
@@ -207,7 +266,7 @@ export default function MessageBoardPage() {
             </div>
           </div>
         </form>
-      </ScrollFrame>
+      </ScrollFrame >
     </div>
   )
 }

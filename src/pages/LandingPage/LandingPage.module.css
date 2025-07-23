@@ -27,3 +27,32 @@ background: url('src/assets/images/landscape_v02.svg') no-repeat center/cover;
 opacity: .6;
 }
 
+/* src/pages/LandingPage/LandingPage.module.css */
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  background: var(--sky-gradient); /* defined in global.css */
+}
+
+.navWrapper {
+  width: 100%;
+  overflow: hidden; /* hide anything above or below the scroll edge */
+  /* if you need to nudge the art up/down, you can adjust here: */
+  margin-bottom: 2rem;
+  z-index: 1000;
+}
+
+.content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 2rem; /* space below the nav art */
+}
+
+.mainScroll {
+  width: 90%;
+  max-width: 800px;
+}
+
+

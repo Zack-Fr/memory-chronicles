@@ -1,14 +1,21 @@
 .ScrollFrame {
   position: relative;
+  background: url("../../assets/images/ScrollFrame_Globe.png") center no-repeat;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: url("../../assets/images/ScrollPaperx0.5.png") center no-repeat;
   /* width: 1059px; */
   width:100%;
+  /* //1059.683 */
+  /* max-height: 500px; */
   height: 683px;
-  padding: 8rem;
-  
+  padding: 1rem;
+  /* margin-top: 10px; */
+}
+
+.hideRollers .rollerTop,
+.hideRollers .rollerBottom {
+  display: none;
 }
 /* .scrollFrameTop,
 .scrollFrameBot {
