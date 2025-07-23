@@ -3,10 +3,12 @@
 namespace App\Services;
 
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Storage;
 use App\Exceptions\CapsuleLockedException;
 use Geocoder\Laravel\Facades\Geocoder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use App\Models\Capsule;
 use Carbon\Carbon;
@@ -162,37 +164,38 @@ class CapsuleService
      * @param  array    $item     ['type','filename','base64']
      * @throws \Exception on invalid Base64 or size breach
      */
-    protected function storeFileAttachment(Capsule $capsule, array $item): void
-    {
-        $type     = $item['type'];    // 'image' or 'audio'
-        $bytes    = base64_decode($item['base64'], true);
-        $filename = $item['filename'];
+protected function storeFileAttachment(Capsule $capsule, array $item): void
+{
+    $type     = $item['type'];    // 'image' or 'audio'
+    $bytes    = base64_decode($item['base64'], true);
+    $filename = $item['filename'];
 
-        if ($bytes === false) {
-            throw new Exception("Invalid Base64 payload for {$filename}");
-        }
-
-        $max = $type === 'image'
-            ? 5 * 1024 * 1024
-            : 10 * 1024 * 1024;
-
-        if (strlen($bytes) > $max) {
-            throw new Exception("{$filename} exceeds the {$type} size limit");
-        }
-
-        // ensure unique
-        $stored = Str::random(8) . "_{$filename}";
-        $path   = "capsules/{$capsule->id}/{$stored}";
-
-        Storage::put($path, $bytes);
-
-        $capsule->attachments()->create([
-            'type'      => $type,
-            'path'      => $path,
-            'latitude'  => null,
-            'longitude' => null,
-        ]);
+    if ($bytes === false) {
+        throw new Exception("Invalid Base64 payload for {$filename}");
     }
+
+    $max = $type === 'image'
+        ? 5 * 1024 * 1024
+        : 10 * 1024 * 1024;
+
+    if (strlen($bytes) > $max) {
+        throw new Exception("{$filename} exceeds the {$type} size limit");
+    }
+
+    $stored = Str::random(8) . "_{$filename}";
+    $path   = "capsules/{$capsule->id}/{$stored}";
+
+    // Store file and log the full path
+    Storage::disk('local')->put($path, $bytes);
+    Log::debug("Stored file at: " . Storage::disk('local')->path($path));
+
+    $capsule->attachments()->create([
+        'type'      => $type,
+        'path'      => $path,
+        'latitude'  => null,
+        'longitude' => null,
+    ]);
+}
     public function listForUser()
     {
         return Capsule::with('attachments')
@@ -218,7 +221,62 @@ class CapsuleService
         if ($capsule->reveal_at->gt(now())) {
             throw new CapsuleLockedException($capsule->reveal_at);
         }
+            // Transform attachments to include a URL
+    $capsule->attachments = $capsule->attachments->map(function($a) {
+        return [
+            'id'        => $a->id,
+            'type'      => $a->type,
+            'path'      => $a->path,
+            // only generate URL for file attachments
+            'url'       => $a->path
+                ? route('attachments.download', ['id' => $a->id])
+                : null,
+            'latitude'  => $a->latitude,
+            'longitude' => $a->longitude,
+        ];
+    });
 
         return $capsule;
     }
+    /**
+     * Return all public, revealed capsules, with optional filters.
+     *
+     * @param  array  $filters  ['mood','country','date_from','date_to']
+     * @return Collection<int, array>
+     */
+    public function publicList(array $filters = []): Collection
+    {
+        $query = Capsule::with('attachments')
+            ->where('privacy', 'public')
+            ->where('is_draft', false)
+            ->where('reveal_at', '<=', now());
+
+        if (! empty($filters['mood'])) {
+            $query->where('mood', $filters['mood']);
+        }
+        if (! empty($filters['country'])) {
+            $query->where('country_code', strtoupper($filters['country']));
+        }
+        if (! empty($filters['date_from'])) {
+            $query->whereDate('reveal_at', '>=', $filters['date_from']);
+        }
+        if (! empty($filters['date_to'])) {
+            $query->whereDate('reveal_at', '<=', $filters['date_to']);
+        }
+
+return $query->get()->map(function($c) {
+        $loc = $c->attachments->first(fn($a)=>$a->type==='location');
+        return [
+            'id'         => $c->id,
+            'title'      => $c->title,
+            'country'    => $c->country_code,
+            'mood'       => $c->mood,
+            'revealed_at'=> $c->reveal_at,
+            'location'   => $loc ? ['lat'=>$loc->latitude,'lng'=>$loc->longitude] : null,
+            'created_at' => $c->created_at,
+            'user'       => ['name'=>$c->user->name],
+        ];
+    });
+}
+    
 }

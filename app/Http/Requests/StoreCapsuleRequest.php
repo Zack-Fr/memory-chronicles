@@ -21,6 +21,8 @@ class StoreCapsuleRequest extends FormRequest
             'mood'                     => 'required|in:happy,neutral,sad',
             'privacy'                  => 'required|in:private,public',
 
+            'country_code' => 'nullable|string|size:2',
+
             'attachments'              => 'required|array|min:1',
             'attachments.*.type'       => 'required|in:location,image,audio',
 

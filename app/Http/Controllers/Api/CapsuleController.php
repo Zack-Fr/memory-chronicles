@@ -1,12 +1,12 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Exceptions\CapsuleLockedException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCapsuleRequest;
 use App\Http\Requests\DraftCapsuleRequest;
+use App\Http\Requests\PublicCapsuleRequest;
 use App\Services\CapsuleService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\JsonResponse;
@@ -18,7 +18,7 @@ class CapsuleController extends Controller
     public function __construct(protected CapsuleService $capsuleService)
     {
         // ensure all methods require auth
-        // $this->middleware('auth:api');
+        // $this->middleware('auth:api')->except('publicIndex');
     }
 
     /**
@@ -46,6 +46,11 @@ class CapsuleController extends Controller
     {
         $draft = $this->capsuleService->upsertDraft($request->validated());
         return $this->success(['draft' => $draft], 'Draft saved');
+    }
+    public function publicIndex(PublicCapsuleRequest $request): JsonResponse
+    {
+        $capsules = $this->capsuleService->publicList($request->validated());
+        return $this->success(['capsules' => $capsules], 'Public capsules retrieved');
     }
     public function index(): JsonResponse
     {
