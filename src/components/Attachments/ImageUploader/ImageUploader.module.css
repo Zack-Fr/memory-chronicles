@@ -1,0 +1,38 @@
+.container {
+display: flex;
+align-items: center;
+gap: 0.5rem;
+}
+
+.input {
+display: none;
+}
+
+.btn {
+width: 2.5rem;
+height: 2.5rem;
+border-radius: 50%;
+background:url('/assets/pill-texture.png') center/cover no-repeat,#f3e2bf;
+border: 1px solid rgba(0, 0, 0, 0.2);
+box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+transition: box-shadow 0.2s, filter 0.2s;
+}
+
+.btn:hover {
+filter: brightness(1.1);
+box-shadow:
+0 0 8px rgba(0, 200, 0, 0.8),
+inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.preview {
+width: 3rem;
+height: 3rem;
+object-fit: cover;
+border: 1px solid #ccc;
+border-radius: 0.5rem;
+}

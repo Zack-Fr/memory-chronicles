@@ -1,0 +1,137 @@
+
+.container {
+min-height: 100vh;
+/* padding: .5rem; */
+display: flex;
+align-items: center;
+justify-content: center;
+background-image: url('../../assets/images/Landscape_v02.svg');
+background-size: cover;
+}
+
+
+.inner {
+  display: flex;
+  justify-content: space-between; 
+  align-items: flex-start;        
+  gap: 3rem; 
+  height:fit-content;
+  /* padding-top: 30px;                       */
+  width: 100%;
+}
+
+
+.leftPane {
+flex: 2;
+display: flex;
+flex-direction: column;
+
+}
+
+.rightPane {
+  width: 220px;  /* enough to hold the three buttons nicely */
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.pillInput {
+flex: 1;
+  max-width: none;  /* remove the old 300px cap */
+width: 100%;
+font-family: 'YourCustomFont', cursive;
+border-radius: 1.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #CF8D07;
+  background: #FFFFFFAA;
+}
+
+.textareaWrapper {
+  margin-top: 1rem;
+}
+
+.clipIcon {
+position: absolute;
+top: 0.8rem;
+left: -1.2rem;
+width: 1.5rem;
+opacity: 0.7;
+}
+
+.topRow {
+position: relative;
+display: flex;
+align-items: center;
+gap: 1rem;
+margin-bottom: 1.5rem;
+}
+
+.attachRow {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+
+.title {
+  align-self: center;
+  font-family: "Handlee", cursive;
+  text-shadow: 5px 5px 3px rgba(0,0,0,0.3);
+  font-weight:600;
+  color: #3b2903;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.selectorGroup {
+margin-bottom: 1.5rem;
+
+}
+
+.selectorLabel {
+font-size: 1rem;
+color: #333;
+margin-bottom: 0.5rem;
+}
+
+
+.dateLabel {
+position: absolute;
+bottom: -1.2rem;
+left: 0;
+font-size: 0.9rem;
+color: #ffffff;
+}
+
+.sendButton {
+margin-top: auto;
+
+display: flex;
+justify-content: center;
+}
+
+.error {
+    color: #d4380d;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.actions {
+  margin-top: auto;
+  text-align: right;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .scrollFrame {
+    padding: 1.5rem 2rem;
+  }
+  .inner {
+    flex-direction: column;
+  }
+  .rightPane {
+    width: 100%;
+  }
+}
+
+
+

@@ -1,0 +1,123 @@
+.container {
+min-height: 100vh;
+padding: 2rem;
+background: url('../../assets/images/landscape_v02.svg') no-repeat bottom center;
+background-size: cover;
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+.title {
+font-family: "Oleo Script", system-ui;
+font-size: 2.5rem;
+color: #d4a017;
+margin-bottom: 1.5rem;
+text-align: center;
+}
+
+.inner {
+  margin-top: 150px;
+/* width: 100%; */
+/* max-width: 500px; */
+justify-content:flex-start;
+display: flex;
+position:static;
+/* flex-direction: row; */
+/* flex:1; */
+gap: 10rem;
+}
+
+/* LEFT PANE */
+.leftPane {
+flex: 2;
+display: flex;
+flex-direction: column;
+}
+
+.tabs {
+display: flex;
+gap: 1rem;
+margin-bottom: 1rem;
+}
+
+.tab {
+flex: 1;
+padding: 0.5rem 1rem;
+background: rgba(255, 255, 255, 0.7);
+border: 1px solid #cf8d07;
+border-radius: 1rem;
+font-family: 'YourCustomFont', cursive;
+cursor: pointer;
+transition: background 0.2s;
+}
+
+.tab:hover {
+background: rgba(255, 255, 255, 0.9);
+}
+
+.activeTab {
+background: linear-gradient(90deg, #cf8d07, #d48806);
+color: white;
+}
+
+.formPlaceholder {
+flex: 1;
+padding: 2rem;
+color: #666;
+font-style: italic;
+text-align: center;
+border: 2px dashed rgba(0, 0, 0, 0.2);
+border-radius: 0.5rem;
+}
+
+/* RIGHT PANE */
+.rightPane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;      /* center horizontally */
+  justify-content: center;  /* center vertically */
+  text-align: center;       /* center any text children */
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.globe {
+  width: 120px;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+.statsLabel {
+  font-family: "Oleo Script", system-ui;
+  font-size: 1rem;
+  color: #3a2a1a;
+  margin-bottom: 0.25rem;
+}
+
+.statsNumber {
+  font-family: "Oleo Script", system-ui;
+  font-size: 1.5rem;
+  color: #3a2a1a;
+  /* margin-bottom: 1rem; */
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .inner {
+    flex-direction: column;
+  }
+  .tabs {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 1rem;
+  }
+  .title {
+    font-size: 2rem;
+  }
+}
