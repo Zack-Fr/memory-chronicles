@@ -34,7 +34,7 @@
 }
 
 .primaryBtn {
-    font-family: "Oleo Script", system-ui;
+    font-family: "Handlee", cursive;
     font-size: large;
     background: linear-gradient(90deg, #976713, #cf8d07);
     color: white;
@@ -52,6 +52,8 @@
     padding: 0.5rem 1rem;
     border-radius: 1rem;
     cursor: pointer;
+    font-family: "Handlee", cursive;
+    
 }
 
 @media (max-width : 900px) {

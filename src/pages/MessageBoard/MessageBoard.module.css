@@ -12,9 +12,11 @@ background-size: cover;
 
 .inner {
   display: flex;
-  justify-content: space-between;  /* push left/ right panes apart */
-  align-items: flex-start;         /* top-align them */
-  gap: 3rem;                       /* smaller gap than 10rem */
+  justify-content: space-between; 
+  align-items: flex-start;        
+  gap: 3rem; 
+  height:fit-content;
+  /* padding-top: 30px;                       */
   width: 100%;
 }
 
@@ -71,6 +73,15 @@ margin-bottom: 1.5rem;
   gap: 1rem;
 }
 
+.title {
+  align-self: center;
+  font-family: "Handlee", cursive;
+  text-shadow: 5px 5px 3px rgba(0,0,0,0.3);
+  font-weight:600;
+  color: #3b2903;
+  text-decoration: none;
+  transition: color 0.2s;
+}
 .selectorGroup {
 margin-bottom: 1.5rem;
 
