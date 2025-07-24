@@ -19,13 +19,13 @@ class AttachmentZipService
      */
     public function createZip(int $capsuleId): string
     {
-        // 1) Fetch capsule and authorize
+        
         $capsule = Capsule::with('attachments')->findOrFail($capsuleId);
         if (auth()->id() !== $capsule->user_id) {
             throw new AccessDeniedHttpException('Unauthorized');
         }
 
-        // 2) Collect only attachments with actual files
+        // Collect only attachments with actual files
         $paths = $capsule->attachments
             ->pluck('path')
             ->filter()    // drop nulls
@@ -35,7 +35,7 @@ class AttachmentZipService
             throw new NotFoundHttpException('No attachments to zip.');
         }
 
-        // 3) Prepare temp directory
+        //Prepare temp directory
         $tempDir = storage_path('app/temp');
         if (! is_dir($tempDir) && ! mkdir($tempDir, 0755, true) && ! is_dir($tempDir)) {
             throw new Exception("Could not create temp directory at {$tempDir}");
@@ -44,7 +44,7 @@ class AttachmentZipService
         $zipName = "capsule-{$capsuleId}-attachments.zip";
         $zipPath = "{$tempDir}/{$zipName}";
 
-        // 4) Open the ZIP
+        // Open the ZIP
         $zip = new ZipArchive();
         $res = $zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
         if ($res !== true) {
@@ -52,7 +52,7 @@ class AttachmentZipService
             throw new Exception("ZipArchive::open returned error code {$res} for path {$zipPath}");
         }
 
-        // 5) Add each file
+        //Add each file
         foreach ($paths as $relPath) {
             $full = Storage::disk('local')->path($relPath);
             if (file_exists($full)) {

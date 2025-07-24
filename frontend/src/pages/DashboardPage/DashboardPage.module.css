@@ -64,7 +64,7 @@
 
 .arrowLeft {
   left: 0;
-  margin-left: 200px;     /* nudge just inside */
+  margin-left: 200px;
 }
 .arrowRight {
   right: 0;
@@ -165,4 +165,6 @@
   .scroll {
     max-width: 90%;
   }
+  .arrowLeft  { margin-left: 1rem }
+  .arrowRight { margin-right: 1rem }
 }

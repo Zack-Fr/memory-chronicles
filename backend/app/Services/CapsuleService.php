@@ -60,21 +60,6 @@ class CapsuleService
             }
         }
 
-        // 3) Reverse-geocode the first location attachment (mandatory)
-        // $loc = $capsule->attachments()
-        //             ->where('type', 'location')
-        //             ->first();
-        // if ($loc) {
-        //     try {
-        //         $geo = Geocoder::reverse($loc->latitude, $loc->longitude)->get();
-        //         if ($geo->isNotEmpty()) {
-        //             $code = strtoupper($geo->first()->getCountry()->getCode());
-        //             $capsule->update(['country_code' => $code]);
-        //         }
-        //     } catch (Exception $e) {
-        //         // optionally log: \Log::warning("Geocode failed: {$e->getMessage()}");
-        //     }
-        // }
 
         return $capsule->load('attachments');
     }

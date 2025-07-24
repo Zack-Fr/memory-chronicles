@@ -9,26 +9,20 @@ align-items: center;
 }
 
 .title {
-font-family: "Oleo Script", system-ui;
+font-family: "Handlee", cursive;
 font-size: 2.5rem;
 color: #d4a017;
-margin-bottom: 1.5rem;
+/* margin-bottom: 1.5rem; */
 text-align: center;
 }
 
 .inner {
-  margin-top: 150px;
-/* width: 100%; */
-/* max-width: 500px; */
+margin-top: 10rem;
 justify-content:flex-start;
 display: flex;
 position:static;
-/* flex-direction: row; */
-/* flex:1; */
-gap: 10rem;
 }
 
-/* LEFT PANE */
 .leftPane {
 flex: 2;
 display: flex;
@@ -47,7 +41,7 @@ padding: 0.5rem 1rem;
 background: rgba(255, 255, 255, 0.7);
 border: 1px solid #cf8d07;
 border-radius: 1rem;
-font-family: 'YourCustomFont', cursive;
+font-family: "Handlee", cursive;
 cursor: pointer;
 transition: background 0.2s;
 }
@@ -71,15 +65,15 @@ border: 2px dashed rgba(0, 0, 0, 0.2);
 border-radius: 0.5rem;
 }
 
-/* RIGHT PANE */
 .rightPane {
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;      /* center horizontally */
-  justify-content: center;  /* center vertically */
-  text-align: center;       /* center any text children */
-  padding: 1rem;
+  align-items: center;      
+  justify-content: center;  
+  text-align: center;
+  margin-left: 8rem;
+  padding: 1rem ;
   gap: 1rem;
 }
 
@@ -90,34 +84,46 @@ border-radius: 0.5rem;
 }
 
 .statsLabel {
-  font-family: "Oleo Script", system-ui;
+  font-family: "Handlee", cursive;
   font-size: 1rem;
   color: #3a2a1a;
   margin-bottom: 0.25rem;
 }
 
 .statsNumber {
-  font-family: "Oleo Script", system-ui;
+  font-family: "Handlee", cursive;
   font-size: 1.5rem;
   color: #3a2a1a;
-  /* margin-bottom: 1rem; */
+
 }
 
-/* Responsive */
+
 @media (max-width: 900px) {
   .inner {
     flex-direction: column;
+    padding-bottom: 0rem;
+    margin: 7rem;
   }
   .tabs {
     justify-content: center;
+  }
+  .leftPane {
+    margin:1rem;
   }
 }
 
 @media (max-width: 600px) {
   .container {
-    padding: 1rem;
+    padding: 0rem;
   }
   .title {
     font-size: 2rem;
+  }
+  .rightPane {
+    text-align: center;
+    margin:0;
+    padding: 0;
+    gap:0;
+    
   }
 }

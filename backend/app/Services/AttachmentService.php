@@ -42,11 +42,11 @@ class AttachmentService
             throw new NotFoundHttpException('No file for this attachment.');
         }
         
-        // if (auth()->id() !== $attachment->user_id) {
-        //     throw new AccessDeniedHttpException('Unauthorized access to attachment.');
-        // }
+        if (auth()->id() !== $attachment->user_id) {
+            throw new AccessDeniedHttpException('Unauthorized access to attachment.');
+        }
 
-        // 4) Resolve full disk path
+        // Resolve full disk path
         $fullPath = Storage::disk('local')->path($attachment->path);
 
         \Log::debug('Resolved fullPath', ['fullPath' => $fullPath]);
@@ -56,7 +56,7 @@ class AttachmentService
             throw new NotFoundHttpException('File not found on disk.');
         }
 
-        // 5) Determine MIME type
+        // Determine MIME type
         $mime     = mime_content_type($fullPath) ?: 'application/octet-stream';
         $filename = basename($fullPath);
 

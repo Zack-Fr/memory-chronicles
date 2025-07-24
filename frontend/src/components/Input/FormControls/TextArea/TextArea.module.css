@@ -22,5 +22,11 @@ font-family: "Oleo Script", system-ui;
 font-size: 1rem;
 color: #3a2a1a;
 resize: vertical;
-min-height: 12rem;
+min-height: 8rem;
+}
+@media (max-width: 900px) {
+.textarea{
+  height:2px;
+  
+}
 }

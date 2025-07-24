@@ -18,3 +18,9 @@ cursor: pointer;
 .forgot:hover {
 filter: brightness(1.1);
 }
+@media (max-width: 900px) {
+.form {
+    gap:0;
+    
+}
+}

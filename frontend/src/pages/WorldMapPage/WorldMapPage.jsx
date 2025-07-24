@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import ScrollFrame from '../../components/ScrollFrame/ScrollFrame'
+import ScrollFrame from '../../components/ScrollFrame/ScrollFrameMap'
 import { getPublicCapsules } from '../../services/capsules'
 import styles from './WorldMapPage.module.css'
 import pinSrc from '../../assets/images/WorldMap.svg'

@@ -5,13 +5,13 @@
   justify-content: center;
   
   background: url('../../assets/images/Navbar_Art.png') no-repeat;
-  background-size:contain;
-  height: 175px;
+  background-size:cover;
+  /* height: 175px; */
   /* height: 175px; */
   /* width:100%;   */
-  transform:translateY(-20px);
-  padding: 0 2rem;
-  box-sizing: border-box;
+  /* transform:translateY(-20px); */
+  /* padding: 0 2rem; */
+  /* box-sizing: border-box; */
 }
 
 .logo {
@@ -37,7 +37,7 @@
   display: flex;
   gap: 8rem;
   font-size:large;
-  /* padding-bottom: 4.5rem; */
+  /* padding-top: 2rem; */
 }
 
 .navItem {
@@ -49,7 +49,7 @@
   color: #3a2a1a;
   text-decoration: none;
   transition: color 0.2s;
-  padding-bottom: 60px;
+  padding-bottom: 20px;
   border-radius: 50px;
   
   -webkit-text-stroke: 0.25px #4f7dc2e0;
@@ -59,3 +59,10 @@
 .navItem:hover {
   color: #cf8d07;
 }
+@media (max-width: 900px) {
+  .navLinks {
+    gap:1rem;
+    font-size: smaller;
+}
+}
+
