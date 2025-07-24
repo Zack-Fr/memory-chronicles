@@ -7,7 +7,7 @@ import ScrollFrameVertical                  from '../../components/ScrollFrame/S
 import Countdown                            from '../../components/Countdown/Countdown'
 import { getUserCapsules }                  from '../../services/capsules'
 import styles                               from './DashboardPage.module.css'
-
+import Navbar from '../../components/Navbar/Navbar'
 // your arrow SVGs
 import leftArrow  from '../../assets/images/Nav_ArrowLeft.svg'
 import rightArrow from '../../assets/images/Nav_ArrowRight.svg'
@@ -83,8 +83,14 @@ const handleClick = c => {
   )
 
   return (
+    
     <div className={styles.container}>
+                  <div className={styles.navWrapper}>
+                  <Navbar />
+                  </div>
+      
       <ToastContainer />
+      
 
       {/* ← back to map */}
       <Link to="/map" className={styles.arrowLeft} data-tooltip="World Map">

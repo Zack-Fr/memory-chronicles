@@ -1,20 +1,23 @@
-/* src/pages/WorldMapPage/WorldMapPage.module.css */
+
 
 .container {
 min-height: 100vh;
-padding: 2rem;
+
 background-image: url('../../assets/images/Landscape_v02.svg');
+
 background-size: cover;
 display: flex;
 flex-direction: column;
 align-items: center;
+z-index: -60;
 }
 
 .title {
-font-family: "Oleo Script", system-ui;
+font-family: "Handlee", cursive;
 font-size: 2rem;
 color: #d4a017;
-margin-bottom: 1rem;
+margin-bottom: 3rem;
+/* gap:40px; */
 }
 
 .scroll {
@@ -23,26 +26,29 @@ max-width: 1000px;
 padding: 0;
 }
 
-.mapWrapper {
-position: relative;
-width: 800px;
-height:400px;
-padding-top: 20%;
-
+.navWrapper {
+width: 100%;
+overflow: hidden;
+margin-bottom: 2rem;
+z-index: 1000;
 }
 
 .mapImage {
+padding-left: 8rem;
 position: relative;
+width: 80%;
+height:80%;
 top: 0;
 left: 0;
 }
 
 .pin {
 position: absolute;
+
 width: 0.5rem;
 height: 0.5rem;
-background: url('../../assets/images/Pin.svg') center bottom no-repeat;
-background-size: contain;
+background: url('../../assets/images/Pin.svg') center no-repeat;
+background-size: cover;
 border: none;
 cursor: pointer;
 transform: translate(-50%, -100%);
@@ -51,7 +57,7 @@ z-index: 10;
 
 .message,
 .error {
-font-family: 'YourCustomFont', cursive;
+font-family: "Handlee", cursive;
 font-size: 1.2rem;
 color: #3a2a1a;
 margin-top: 2rem;

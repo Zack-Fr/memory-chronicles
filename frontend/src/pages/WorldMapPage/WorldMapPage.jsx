@@ -4,6 +4,7 @@ import ScrollFrame from '../../components/ScrollFrame/ScrollFrame'
 import { getPublicCapsules } from '../../services/capsules'
 import styles from './WorldMapPage.module.css'
 import pinSrc from '../../assets/images/WorldMap.svg'
+import Navbar from '../../components/Navbar/Navbar'
 
 
 
@@ -35,6 +36,9 @@ if (error) return <p className={styles.error}>{error}</p>
 
 return (
     <div className={styles.container}>
+                    <div className={styles.navWrapper}>
+                    <Navbar />
+                    </div>
     <h2 className={styles.title}>Worldwide Map</h2>
 
     <ScrollFrame className={styles.scroll}>

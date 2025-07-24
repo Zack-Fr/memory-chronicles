@@ -4,7 +4,7 @@ import { Smile, Meh, Frown } from 'lucide-react'
 
 const moods =[
     {value :'happy', Icon: Smile, label: 'Happy'},
-    {value: 'neutral', Icon: Meh, label: 'Neural'},
+    {value: 'neutral', Icon: Meh, label: 'Neutral'},
     {value: 'sad', Icon: Frown, label: 'Sad'}
 ]
 

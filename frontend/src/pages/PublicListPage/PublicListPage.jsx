@@ -157,9 +157,7 @@ export default function PublicListPage() {
                 {selected.recording_url && <Mic2 size={20} />}
               </div>
               <div className={styles.actions}>
-                <Button onClick={() => navigate(`/capsules/${selected.id}`)}>
-                  Read
-                </Button>
+
               </div>
             </div>
           ) : (
@@ -171,8 +169,8 @@ export default function PublicListPage() {
       {/* → Right arrow */}
       <div
         className={styles.arrowRight}
-        data-tooltip="Write Your Own"
-        onClick={() => navigate('/write')}
+        data-tooltip="Read"
+        onClick={() => navigate(`/capsules/${selected.id}`)}
       >
         <img src={rightArrow} alt="" />
       </div>

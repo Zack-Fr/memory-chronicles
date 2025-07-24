@@ -7,6 +7,7 @@ import TextInput from '../../components/Input/FormControls/TextInput/TextInput'
 import DateInput from '../../components/Input/FormControls/DateInput/DateInput'
 import TextArea from '../../components/Input/FormControls/TextArea/TextArea'
 import Button from '../../components/Button/Button'
+import Navbar from '../../components/Navbar/Navbar'
 
 //Message features functions
 import MoodSelector from '../../components/MoodSelector/MoodSelector'
@@ -177,7 +178,12 @@ export default function MessageBoardPage() {
   }
 
   return (
+    
     <div className={styles.container}>
+                  <div className={styles.navWrapper}>
+                  <Navbar />
+                  </div>
+              
       <ToastContainer />
       <ScrollFrame>
         <h2 className={styles.title}>Write Your Chronicle</h2>

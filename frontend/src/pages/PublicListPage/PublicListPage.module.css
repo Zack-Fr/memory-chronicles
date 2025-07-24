@@ -96,7 +96,7 @@
 }
 .listItem:hover,
 .activeItem {
-  color: #cf8d07;
+  color: #0725cfb2;
 }
 
 /* Detail panel */
@@ -119,6 +119,7 @@
   justify-content: flex-end;
   margin-top: 1rem;
 }
+
 
 /* Arrows and tooltips */
 .arrowLeft,
@@ -186,7 +187,7 @@
 /* Messages */
 .message,
 .error {
-  font-family: 'YourCustomFont', cursive;
+  font-family: "Handlee", cursive;
   font-size: 1rem;
   color: #3a2a1a;
 }
