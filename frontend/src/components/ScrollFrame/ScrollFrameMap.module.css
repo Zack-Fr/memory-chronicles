@@ -3,7 +3,9 @@
   flex-direction: column;
   background: url("../../assets/images/ScrollPaper.png") center no-repeat;
   background-size:contain;
-  padding: 9rem;
+  transform: translateY(-100px);
+  /* padding-bottom: 9rem; */
+  
   
 }
 

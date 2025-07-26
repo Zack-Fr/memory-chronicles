@@ -38,6 +38,7 @@
   flex-wrap: wrap;
   width: 100%;
   max-width: 1200px;
+  padding-top: 4rem;
 }
 
 /* Scroll container with hidden scrollbar + grab cursor */
@@ -87,7 +88,7 @@
   font-family: "Handlee", cursive;
   color: #3a2a1a;
   cursor: pointer;
-  margin-left: 60px;
+  
 
   /* ellipsis for overflow */
   white-space: nowrap;
@@ -99,12 +100,11 @@
   color: #0725cfb2;
 }
 
-/* Detail panel */
 .detail {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  padding: 0 1rem;
+  padding: 0 6rem;
 }
 .detail p {
   margin: 0;
@@ -120,8 +120,6 @@
   margin-top: 1rem;
 }
 
-
-/* Arrows and tooltips */
 .arrowLeft,
 .arrowRight {
   position: absolute;
@@ -135,16 +133,14 @@
   justify-content: center;
   z-index: 10;
 }
-.arrowLeft  { left: 1rem }
-.arrowRight { right: 1rem }
 
 .arrowLeft {
   left: 0;
-  margin-left: 200px;     /* nudge just inside */
+  margin-left: 100px;  
 }
 .arrowRight {
   right: 0;
-  margin-right: 190px;
+  margin-right: 100px;
 }
 .arrowLeft img,
 .arrowRight img {
@@ -183,8 +179,6 @@
   opacity: 1;
 }
 
-
-/* Messages */
 .message,
 .error {
   font-family: "Handlee", cursive;
@@ -195,7 +189,6 @@
   color: #d4380d;
 }
 
-/* Responsive */
 @media (max-width: 900px) {
   .inner {
     flex-direction: column;
@@ -204,4 +197,32 @@
   .scroll {
     max-width: 90%;
   }
+  .arrowRight img {
+    margin-top: 40rem;
+    margin-left:9rem;
+  }
+  .arrowLeft img {
+  margin-top: 40rem;
+  margin-right:9rem;
+  }
+  
+  .detail {
+  padding: 0 2rem;
+  }
+  .filters{
+    display: flex;
+    flex-direction: row;
+    
+    gap:0;
+  }
+  .filter input{
+    
+    gap:0;
+    padding:0;
+    
+  }
+  .label {
+    gap:0;
+  }
+
 }

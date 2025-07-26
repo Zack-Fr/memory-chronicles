@@ -4,6 +4,7 @@ import ScrollFrameBody                from '../../components/ScrollFrame/ScrollF
 import Countdown                      from '../../components/Countdown/Countdown'
 import Button                         from '../../components/Button/Button'
 import { getCapsule, downloadZip }                 from '../../services/capsules'
+import Navbar from '../../components/Navbar/Navbar'
 
 // Lucide icons
 import { MapPin, Smile, Meh, Frown, Globe, Lock } from 'lucide-react'
@@ -57,7 +58,11 @@ export default function MessageDetailPage() {
 
   return (
     <div className={styles.container}>
+                  <div className={styles.navWrapper}>
+                  <Navbar />
+                  </div>
       <ScrollFrameBody>
+        
         {!isUnlocked ? (
           <div className={styles.locked}>
             <Countdown targetDate={reveal_at} />
@@ -88,6 +93,7 @@ export default function MessageDetailPage() {
                     </div>
                   )
                 }
+                
 
                 if (att.type === 'image') {
                   return (

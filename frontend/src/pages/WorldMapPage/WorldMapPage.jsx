@@ -39,9 +39,9 @@ return (
                     <div className={styles.navWrapper}>
                     <Navbar />
                     </div>
-    <h2 className={styles.title}>Worldwide Map</h2>
 
     <ScrollFrame className={styles.scroll}>
+    <h2 className={styles.title}>Worldwide Map</h2>
         <div className={styles.mapWrapper}>
           {/* Your parchment‐scroll map image */}
         <img

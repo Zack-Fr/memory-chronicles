@@ -13,8 +13,8 @@ z-index: -60;
 font-family: "Handlee", cursive;
 font-size: 2rem;
 color: #d4a017;
-/* margin-top: 8rem; */
-gap:40px;
+/* margin-top: 16rem; */
+/* gap:40px; */
 }
 
 .scroll {
@@ -31,10 +31,19 @@ z-index: 1000;
 }
 
 .mapImage {
-
-position: relative;
+position: absolute;
 top: 0;
 left: 0;
+width: 100%;
+height: 100%;
+object-fit: cover;
+}
+
+
+.mapWrapper {
+position: relative;
+width: 100%;
+padding-top: 60%;
 }
 
 .pin {
@@ -43,7 +52,7 @@ width: 0.5rem;
 height: 0.5rem;
 background: url('../../assets/images/Pin.svg') center no-repeat;
 background-size: cover;
-border: none;
+border: 6px;
 cursor: pointer;
 transform: translate(-50%, -100%);
 z-index: 10;

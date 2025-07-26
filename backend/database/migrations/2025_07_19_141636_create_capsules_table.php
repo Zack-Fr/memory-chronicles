@@ -25,6 +25,7 @@ return new class extends Migration
 
             $table->enum('privacy', ['private', 'public']);
             //draft flag
+            
             $table->boolean('is_draft')->default(false);
             // Filled in by reverse-geocode
             $table->string('country_code', 2)->nullable();

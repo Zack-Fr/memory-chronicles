@@ -1,13 +1,21 @@
 .container {
-min-height: 100vh;
-padding: 2rem;
-background-image: url('../../assets/images/Landscape_v02.svg');
+  min-height: 100vh;
+  /* padding: 2rem; */
+  background-image: url('../../assets/images/Landscape_v02.svg');
   background-size: cover;
   display: flex;
   align-items: center;
-  justify-content: center;
+  /* justify-content: center; */
+  flex-direction: column;
 }
 
+.navWrapper {
+  width: 100%;
+  overflow: hidden;
+  margin-bottom: 2rem;
+  z-index: 1000;
+
+}
 .locked {
   display: flex;
   justify-content: center;
@@ -16,16 +24,19 @@ background-image: url('../../assets/images/Landscape_v02.svg');
 }
 
 .content {
+  position: relative;
+  width:100vh;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
 .messageText {
-  font-family: 'YourCustomFont', cursive;
+  font-family: "Handlee", cursive;
   font-size: 1.1rem;
   color: #3a2a1a;
   line-height: 1.5;
+  padding-bottom: 10rem;
 }
 
 .iconRow {
@@ -49,8 +60,9 @@ background-image: url('../../assets/images/Landscape_v02.svg');
 
 .attachRow {
   display: flex;
-  gap: 1rem;
+  gap: 10rem;
   flex-wrap: wrap;
+  justify-content: space-between;
 }
 
 .image {
@@ -65,6 +77,7 @@ background-image: url('../../assets/images/Landscape_v02.svg');
 .actions {
   display: flex;
   justify-content: flex-end;
+  gap:5rem;
 }
 
 .message {
@@ -78,7 +91,6 @@ background-image: url('../../assets/images/Landscape_v02.svg');
   color: #d4380d;
   text-align: center;
 }
-
 @media (max-width: 800px) {
   .content {
     gap: 1rem;

@@ -28,18 +28,18 @@
 .scroll {
   flex: 1;
   min-width: 280px;
-  max-height: 60vh;            /* constrain height */
+  max-height: 60vh;            
   overflow-y: auto;
   cursor: grab;
 }
 
 .scroll::-webkit-scrollbar {
-  display: none;               /* Chrome/Safari */
+  display: none;               
 }
 
 /* Titles list */
 .scrollTitle {
-  font-family: "Oleo Script", system-ui;
+  font-family: "Handlee", cursive;
   font-size: 1.25rem;
   color: #3a2a1a;
   text-align: center;
@@ -130,7 +130,7 @@
   border: none;
   padding: 0.25rem 0;
   text-align: left;
-  font-family: "Oleo Script", system-ui;
+  font-family: "Handlee", cursive;
   color: #3a2a1a;
   cursor: pointer;
   margin-left: 60px;
