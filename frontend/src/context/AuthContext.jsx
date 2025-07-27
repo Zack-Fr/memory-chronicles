@@ -2,6 +2,14 @@ import React, { createContext, useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import apiClient from '../services/apiClient'
 import { upsertDraft } from '../services/capsules'
+
+
+
+/* `export const AuthContext = createContext()` is creating a new context object using the
+`createContext` function provided by React. This context object will be used to share the
+authentication state and related functions (such as register, login, logout) throughout the
+application. By exporting it, other components in the application can import and use this context to
+access the authentication state and functions provided by the `AuthProvider`. */
 export const AuthContext = createContext()
 
 export const AuthProvider = ({ children }) => {

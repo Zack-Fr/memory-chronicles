@@ -11,13 +11,9 @@ export default function LandingPage () {
             <div className={styles.navWrapper}>
             <Navbar />
             </div>
-
             <div className={styles.content}>
             {<Question />}
             </div>
-            
-
-            
             <div className={styles.backgroundPlaceholder}>
             </div>
         </div>

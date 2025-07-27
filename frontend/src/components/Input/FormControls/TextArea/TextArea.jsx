@@ -1,5 +1,5 @@
 import React from 'react'
-import styles from './Textarea.module.css'
+import styles from './TextArea.module.css'
 
 export default function TextArea ({label, value, onChange, placeholder ='', rows = 4, id, className = ''}) {
     return (

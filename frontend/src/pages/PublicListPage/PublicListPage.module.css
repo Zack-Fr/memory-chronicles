@@ -45,12 +45,12 @@
 .scroll {
   flex: 1;
   min-width: 280px;
-  max-height: 60vh;            /* constrain height */
+  max-height: 60vh;           
   overflow-y: auto;
   cursor: grab;
 }
 .scroll::-webkit-scrollbar {
-  display: none;               /* Chrome/Safari */
+  display: none;               
 }
 
 /* Titles list */
@@ -60,6 +60,7 @@
   color: #3a2a1a;
   text-align: center;
   margin-bottom: 0.5rem;
+  padding-bottom: 4rem;
 }
 .statsLabel,
 .listTitle {

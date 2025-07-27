@@ -8,7 +8,7 @@ import Countdown                            from '../../components/Countdown/Cou
 import { getUserCapsules }                  from '../../services/capsules'
 import styles                               from './DashboardPage.module.css'
 import Navbar from '../../components/Navbar/Navbar'
-// your arrow SVGs
+// arrow SVGs
 import leftArrow  from '../../assets/images/Nav_ArrowLeft.svg'
 import rightArrow from '../../assets/images/Nav_ArrowRight.svg'
 
@@ -18,7 +18,8 @@ export default function DashboardPage() {
   const [loading, setLoading]   = useState(true)
   const [error, setError]       = useState('')
   const [hoveredId, setHoveredId] = useState(null)
-
+  
+  // const [refresh, ]
   // ref to scroll the active item into view if desired
 const listRef = useRef(null)
 
