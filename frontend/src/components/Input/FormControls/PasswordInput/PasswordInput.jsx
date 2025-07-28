@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
-import styles from './passwordInput.module.css'
+import styles from './PasswordInput.module.css'
 
 export default function PasswordInput({
 id,
