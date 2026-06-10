@@ -2,6 +2,10 @@
 
 Memory Chronicles is a full-stack web application with a Laravel API backend and a React + Vite frontend.
 
+## Preview
+
+![Memory Chronicles Message Board](./MemoryChronciles.png)
+
 ## Repository Structure
 
 - `backend/` Laravel 12 API and business logic
@@ -55,6 +59,12 @@ npm run dev
 ```
 
 The frontend is usually available at `http://localhost:5173`.
+
+## App View While Running
+
+This is the Message Board view you should see once the frontend and backend are running.
+
+![Memory Chronicles Running View](./MemoryChronciles.png)
 
 ## Helpful Commands
 
