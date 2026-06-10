@@ -31,9 +31,8 @@ export async function getCapsule(id) {
   const { data } = await apiClient.get(`/capsules/${id}`)
   const cap = data.data.capsule
   cap.attachments = cap.attachments.map(a => ({
-    ...a,
-    url: a.path ? `/attachments/${a.id}/download` : null
-  }))
+    ...a,url: a.path ? `/attachments/${a.id}/download` : null
+}))
   return cap
 }
 

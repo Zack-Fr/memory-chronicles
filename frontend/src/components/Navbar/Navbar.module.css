@@ -15,7 +15,6 @@
 }
 
 .logo {
-  
   left:2rem;
   height:90px;
   width: 90px;
@@ -51,8 +50,6 @@
   transition: color 0.2s;
   padding-bottom: 20px;
   border-radius: 50px;
-  
-  -webkit-text-stroke: 0.25px #4f7dc2e0;
 
 }
 

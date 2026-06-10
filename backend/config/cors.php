@@ -14,7 +14,7 @@ return [
     'allowed_headers' => ['*'],
 
     // Don’t support cookies/credentials for JWT in headers:
-    'supports_credentials' => false,
+    'supports_credentials' => true,
 
     // How long browsers can cache the preflight (in seconds):
     'max_age' => 3600,
