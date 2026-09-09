@@ -1,23 +1,44 @@
 .ScrollFrame {
+  box-sizing: border-box;
+  width: min(1150px, 94vw);
+  margin: 2rem auto;
 
   display: flex;
   flex-direction: column;
-  background: url("../../assets/images/ScrollPaper.png") center no-repeat;
-  background-size:cover;
-  padding: 15rem;
-  
+
+  /* Match the artwork's real proportions so the background is never cropped. */
+  aspect-ratio: 1295 / 835;
+
+  background: url("../../assets/images/ScrollPaper.png") center / 100% 100% no-repeat;
+
+  /* Percentage padding keeps the writing area inside the parchment
+     (clear of the torn edges and the wooden rollers) at any size. */
+  padding: 11% 13.5% 12%;
+}
+
+/* The form scrolls within the parchment instead of stretching the frame. */
+.content {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* Responsive */
 @media (max-width: 900px) {
   .ScrollFrame {
-    flex-direction: column;
+    aspect-ratio: auto;
+    padding: 3rem 2rem;
+  }
+
+  .content {
+    overflow: visible;
   }
 }
 
 @media (max-width: 600px) {
   .ScrollFrame {
-    padding: 1rem;
+    padding: 2.5rem 1.25rem;
   }
-
 }

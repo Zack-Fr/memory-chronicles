@@ -9,10 +9,11 @@ can browse memories left by others around the globe.
 It is built as a Laravel 12 REST API with a React + Vite single-page frontend.
 
 ## Preview
+![Memory Chronicles Landing Page](./landingPage.png)
 
 ![Memory Chronicles Message Board](./MemoryChronciles.png)
 
-![Memory Chronicles Landing Page](./landingPage.png)
+
 
 ## UX Flow
 
