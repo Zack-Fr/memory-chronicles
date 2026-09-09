@@ -6,6 +6,12 @@ Memory Chronicles is a full-stack web application with a Laravel API backend and
 
 ![Memory Chronicles Message Board](./MemoryChronciles.png)
 
+## UX Flow
+
+The overall user experience flow across the app's pages (landing page, world map, message board, login/register, user dashboard, and message details) is shown below.
+
+![Memory Chronicles UX Flow](./UXFlow.png)
+
 ## Repository Structure
 
 - `backend/` Laravel 12 API and business logic
