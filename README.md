@@ -70,7 +70,7 @@ The frontend is usually available at `http://localhost:5173`.
 
 This is the Message Board view you should see once the frontend and backend are running.
 
-![Memory Chronicles Running View](./MemoryChronciles.png)
+![Memory Chronicles Running View](./LandingPage.png)
 
 ## Helpful Commands
 
